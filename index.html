@@ -228,7 +228,30 @@ tileT.wrapS=tileT.wrapT=THREE.RepeatWrapping;tileT.repeat.set(12,8);
 var faceT=cv(128,128,function(g){g.fillStyle='#ecfdf5';g.fillRect(0,0,128,128);g.strokeStyle='#059669';g.lineWidth=6;g.beginPath();g.arc(64,64,34,0,7);g.stroke();[[22,22],[106,22],[22,106],[106,106]].forEach(function(p){g.strokeRect(p[0]-10,p[1]-10,20,20)})});
 var cardT=cv(256,160,function(g){g.fillStyle='#fff';g.fillRect(0,0,256,160);g.strokeStyle='#10b981';g.lineWidth=6;g.strokeRect(3,3,250,154);g.fillStyle='#d1fae5';g.beginPath();g.arc(52,56,30,0,7);g.fill();g.fillStyle='#cbd5e1';g.fillRect(100,38,120,14);g.fillRect(100,62,80,12);g.fillStyle='#059669';g.fillRect(24,108,208,32);g.fillStyle='#fff';g.font='700 22px sans-serif';g.fillText('✓ Present',80,132)});
 var dashT=cv(256,160,function(g){g.fillStyle='#fff';g.fillRect(0,0,256,160);g.fillStyle='#059669';g.fillRect(0,0,256,22);[40,70,55,95,80,120].forEach(function(v,i){g.fillStyle=i%2?'#10b981':'#059669';g.fillRect(18+i*30,150-v,20,v)});g.fillStyle='#d1fae5';g.fillRect(206,36,40,26);g.fillRect(206,70,40,26);g.fillRect(206,104,40,26)});
-var webT=cv(512,320,function(g){g.fillStyle='#fff';g.fillRect(0,0,512,320);g.fillStyle='#ecfdf5';g.fillRect(0,0,512,34);['#fca5a5','#fde68a','#86efac'].forEach(function(c,i){g.fillStyle=c;g.beginPath();g.arc(20+i*20,17,6,0,7);g.fill()});var q=g.createLinearGradient(0,40,512,200);q.addColorStop(0,'#059669');q.addColorStop(1,'#34d399');g.fillStyle=q;g.fillRect(16,48,480,140);g.fillStyle='#fff';g.fillRect(40,78,230,22);g.fillRect(40,112,170,14);g.fillRect(40,144,100,24);[0,1,2].forEach(function(i){g.fillStyle='#d1fae5';g.fillRect(16+i*166,204,148,96)})});
+/* Web & Apps chamber: rotating showcase of recent client websites */
+var WKS=[
+ {n:'Shyam Auto Accessories',u:'shyamautoaccessories.in',k:'shop',c:['#111827','#f97316','#fed7aa'],h:'Premium Bike Parts & Riding Gear',t:['Bike Collections','Riding Gear','Parts','Fast Checkout']},
+ {n:'Mayuri Dance & Fitness',u:'mayuridance.in',k:'class',c:['#9d174d','#ec4899','#fce7f3'],h:'Dance & Fitness Academy',t:['Online Admission','Batch Schedule','Choreo Gallery'],b:'WhatsApp Enquiry'},
+ {n:'Pragyanjali Yoga Center',u:'pragyanjaliyoga.com',k:'class',c:['#0f766e','#2dd4bf','#ccfbf1'],h:'Find Your Calm, Every Day',t:['Daily Batches','Instructors','Book a Class'],b:'1-Click Booking'},
+ {n:'Jagashilp',u:'jagashilp.in',k:'shop',c:['#c2410c','#fb923c','#ffedd5'],h:'Personalized Gifts Made Easy',t:['Mugs','Keychains','Tote Bags','T-Shirts']},
+ {n:'S2 Events Patna',u:'s2eventspatna.in',k:'event',c:['#1e1b4b','#f43f5e','#c7d2fe'],h:'Disco Dandiya Night',t:['Stag Pass','Couple Pass','Group Pass'],b:'Get Passes'}];
+function rrf(g,x,y,w,h,r,f){g.fillStyle=f;g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();g.fill()}
+function txt(g,s,x,y,sz,col,w,al){g.font=(w||700)+' '+sz+'px "DM Sans",system-ui,sans-serif';g.fillStyle=col;g.textBaseline='middle';g.textAlign=al||'left';g.fillText(s,x,y)}
+function drawSite(g,i){var s=WKS[i],c=s.c,k;g.fillStyle='#fff';g.fillRect(0,0,512,320);
+ g.fillStyle='#f1f5f9';g.fillRect(0,0,512,34);['#fca5a5','#fde68a','#86efac'].forEach(function(q,j){g.fillStyle=q;g.beginPath();g.arc(20+j*18,17,5.5,0,7);g.fill()});
+ rrf(g,84,8,250,18,9,'#fff');txt(g,'🔒 '+s.u,98,17.5,11,'#475569',500);txt(g,'RECENT WORK '+(i+1)+'/'+WKS.length,496,17.5,10,'#059669',800,'right');
+ g.fillStyle=c[0];g.fillRect(0,34,512,30);txt(g,s.n,18,49,16,'#fff',800);[0,1,2].forEach(function(j){rrf(g,330+j*56,44,44,10,5,'rgba(255,255,255,.35)')});
+ var gr=g.createLinearGradient(0,64,512,190);gr.addColorStop(0,c[0]);gr.addColorStop(1,c[1]);g.fillStyle=gr;g.fillRect(0,64,512,126);
+ txt(g,s.h,24,100,s.h.length>26?21:25,'#fff',800);rrf(g,24,128,200,8,4,'rgba(255,255,255,.55)');rrf(g,24,142,150,8,4,'rgba(255,255,255,.35)');
+ rrf(g,24,160,s.b?150:110,22,11,c[1]);txt(g,s.b||'Shop Now',s.b?99:79,171,11,'#fff',800,'center');
+ g.fillStyle='rgba(255,255,255,.18)';g.beginPath();g.arc(420,128,58,0,7);g.fill();g.fillStyle='rgba(255,255,255,.28)';g.beginPath();g.arc(444,112,32,0,7);g.fill();
+ if(s.k==='shop'){for(k=0;k<4;k++){var x=16+k*122;rrf(g,x,204,110,100,10,c[2]);g.fillStyle=c[1];g.beginPath();g.arc(x+55,238,22,0,7);g.fill();txt(g,s.t[k],x+55,282,11,c[0],800,'center');rrf(g,x+28,292,54,6,3,'rgba(0,0,0,.12)')}}
+ else if(s.k==='class'){for(k=0;k<3;k++){var y=202+k*38;rrf(g,16,y,480,32,9,c[2]);g.fillStyle=c[1];g.beginPath();g.arc(38,y+16,10,0,7);g.fill();txt(g,s.t[k],58,y+16,13,c[0],800);rrf(g,410,y+7,74,18,9,c[0]);txt(g,'Open',447,y+16,10,'#fff',800,'center')}}
+ else{for(k=0;k<3;k++){var x2=16+k*162;rrf(g,x2,204,150,100,12,c[0]);rrf(g,x2+10,214,130,10,5,c[1]);txt(g,s.t[k],x2+75,254,15,'#fff',800,'center');rrf(g,x2+35,276,80,18,9,c[1]);txt(g,'Buy',x2+75,285,10,'#fff',800,'center')}}}
+var webC=document.createElement('canvas');webC.width=1024;webC.height=640;var webG=webC.getContext('2d'),webT=new THREE.CanvasTexture(webC);webT.anisotropy=AN;var webK=-1;
+function webTick(t){var P=3.8,i=Math.floor(t/P)%WKS.length,ph=t%P,f=ph>P-.6?(ph-(P-.6))/.6:0,key=i*20+Math.round(f*10);if(key===webK)return;webK=key;
+ webG.setTransform(2,0,0,2,0,0);drawSite(webG,i);if(f>0){webG.globalAlpha=f;drawSite(webG,(i+1)%WKS.length);webG.globalAlpha=1}webT.needsUpdate=true}
+webTick(0);
 var formT=cv(256,340,function(g){g.fillStyle='#fff';g.fillRect(0,0,256,340);g.fillStyle='#059669';g.fillRect(0,0,256,40);g.fillStyle='#fff';g.font='700 20px sans-serif';g.fillText('Admission Form',16,27);g.strokeStyle='#10b981';g.lineWidth=2;g.setLineDash([6,4]);for(var i=0;i<4;i++){g.strokeRect(16,62+i*58,224,40)}g.setLineDash([]);g.fillStyle='#059669';g.fillRect(16,292,224,34);g.fillStyle='#fff';g.fillText('Submit',96,316)});
 function scr(title,fn){return cv(512,320,function(g){g.fillStyle='#fff';g.fillRect(0,0,512,320);g.fillStyle='#059669';g.fillRect(0,0,512,48);g.fillStyle='#fff';g.font='800 26px sans-serif';g.textBaseline='middle';g.textAlign='left';g.fillText(title,18,25);fn(g)})}
 function pill(g,x,y,w,h,c,t,fs){g.fillStyle=c;g.fillRect(x,y,w,h);g.fillStyle='#fff';g.font='800 '+(fs||18)+'px sans-serif';g.textAlign='center';g.fillText(t,x+w/2,y+h/2+1)}
@@ -553,7 +576,7 @@ function web(X){
   var br=new THREE.Group();br.position.set(X,1.9,-22.3);scene.add(br);B(2.8,1.8,.06,SL,0,0,0,br);plane(2.65,1.65,webT,0,0,.04,br);
   B(.46,.86,.05,SL,X+2.1,1.2,-21.4);plane(.4,.78,webT,X+2.1,1.2,-21.37);cyl(1.3,1.3,.05,M(0x34d399),X,.03,-22.3);
   var cs=[];for(var i=0;i<4;i++){var c=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(.4,.4,.4)),new THREE.LineBasicMaterial({color:0x059669}));scene.add(c);cs.push(c)}
-  anim.push(function(t){br.position.y=1.9+Math.sin(t*1.2)*.1;br.rotation.y=Math.sin(t*.5)*.2;cs.forEach(function(c,i){var a=t*.6+i*1.57;c.position.set(X+Math.cos(a)*2,1.6+Math.sin(t+i)*.4,-22.3+Math.sin(a)*1.1);c.rotation.x=t*.7;c.rotation.y=t*.9})});
+  anim.push(webTick);anim.push(function(t){br.position.y=1.9+Math.sin(t*1.2)*.1;br.rotation.y=Math.sin(t*.5)*.2;cs.forEach(function(c,i){var a=t*.6+i*1.57;c.position.set(X+Math.cos(a)*2,1.6+Math.sin(t+i)*.4,-22.3+Math.sin(a)*1.1);c.rotation.x=t*.7;c.rotation.y=t*.9})});
 }
 function frm(X){
   [[-1.5,0],[-.6,-.35],[.3,-.7]].forEach(function(p,i){var c=plane(1.2,1.6,formT,X+p[0],1.55,-21.4+p[1]);c.rotation.y=.25;anim.push(function(t){c.position.y=1.55+Math.sin(t*1.2+i*2)*.08})});
