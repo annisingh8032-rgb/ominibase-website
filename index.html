@@ -163,7 +163,8 @@ var scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(55,1,.1,120);
 r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFShadowMap;r.shadowMap.autoUpdate=false;cam.far=320;
 scene.fog=new THREE.Fog(0xf4d9bd,60,250);
 var hl=new THREE.HemisphereLight(0xffe6c8,0xc9a98f,.66);scene.add(hl);
-var inAmb=new THREE.AmbientLight(0xfff0d6,0),inD=0,NFv=0;scene.add(inAmb);/* office ceiling lights: only inside the building, only when it is dark outside */
+var inAmb=new THREE.AmbientLight(0xfff0d6,0),inD=0,NFv=0;scene.add(inAmb);
+var entL=new THREE.PointLight(0xffecc8,0,16);entL.position.set(0,3.0,3.0);scene.add(entL);var cnL=[-1.9,1.9].map(function(x){var l=new THREE.PointLight(0xfff0d0,0,11);l.position.set(x,3.05,1.6);scene.add(l);return l});var plL=new THREE.PointLight(0xfff0d8,0,9);scene.add(plL);/* night: entrance light + soft light that follows the visitor *//* office ceiling lights: only inside the building, only when it is dark outside */
 var dl=new THREE.DirectionalLight(0xffcf94,.92);dl.position.set(55,36,40);dl.target.position.set(0,0,8);scene.add(dl);scene.add(dl.target);
 dl.castShadow=true;dl.shadow.mapSize.set(mob?1024:1536,mob?1024:1536);var shc=dl.shadow.camera;shc.left=-55;shc.right=55;shc.top=55;shc.bottom=-55;shc.near=10;shc.far=170;dl.shadow.bias=-.0004;dl.shadow.normalBias=.03;
 var skyG=new THREE.SphereGeometry(220,40,24),skyP=skyG.attributes.position,skyN=skyP.count,skyD=new Float32Array(skyN*3),skyC=new Float32Array(skyN*3);
@@ -302,7 +303,7 @@ B(24.8,.25,26.8,DK,0,11.8,-13);
 B(9.8,1.8,.03,DK,0,8.5,.3);plane(9,1.4,cv(1024,160,function(g,w,h){g.font='800 112px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='rgba(0,0,0,.25)';g.fillText('OMINIBASE',w/2+4,h/2+6);g.fillStyle='#fff';g.fillText('OMINIBASE',w/2,h/2)}),0,8.5,.32);
 var STEEL=M(0x2b3640),CHR=M(0xcfd8dc);
 /* canopy */
-B(5.6,.16,2.4,STEEL,0,3.42,1.2);B(5.6,.1,.1,GR,0,3.3,2.35);B(3.8,.04,.7,bas(0xfff1d0),0,3.32,1.25);
+B(5.6,.16,2.4,STEEL,0,3.42,1.2);B(5.6,.1,.1,GR,0,3.3,2.35);B(4.4,.05,1.1,bas(0xfffaf0),0,3.32,1.25);
 [-2.65,2.65].forEach(function(x){B(.1,3.4,.1,STEEL,x,1.7,2.3)});
 /* side windows */
 [-7,7].forEach(function(x){B(7,2.6,.06,M(0x2f6f73),x,1.9,.18);B(7.2,.1,.08,W,x,3.25,.19);B(7.2,.1,.08,W,x,.6,.19)});
@@ -704,7 +705,7 @@ function loop(ms){
     if(mode!=='out')[mp,gq].forEach(function(q){var ex=g.position.x-q.x,ez=g.position.z-q.z,ed=Math.hypot(ex,ez);if(ed<1.1&&ed>1e-4){var kk=Math.min(1,dt*6)*(1.1-ed);g.position.x+=ex/ed*kk;g.position.z+=ez/ed*kk}});
     walk2(w.P,dt)});
   for(var i=0;i<anim.length;i++)anim[i](t);
-  camUpdate(dt);var ins=(cam.position.z<.8&&cam.position.z>-26.5&&Math.abs(cam.position.x)<12.6)?1:0;inD+=(ins-inD)*Math.min(1,dt*3);inAmb.intensity=inD*(.12+NFv*.62);sky.position.copy(cam.position);if((loop.f=(loop.f||0)+1)%3===1)r.shadowMap.needsUpdate=true;r.render(scene,cam);
+  camUpdate(dt);var ins=(cam.position.z<.8&&cam.position.z>-26.5&&Math.abs(cam.position.x)<12.6)?1:0;inD+=(ins-inD)*Math.min(1,dt*3);inAmb.intensity=inD*(.12+NFv*.62);entL.intensity=NFv*2.2;cnL[0].intensity=cnL[1].intensity=NFv*1.7;plL.intensity=NFv*1.0;plL.position.set(me.position.x,2.8,me.position.z+.9);sky.position.copy(cam.position);if((loop.f=(loop.f||0)+1)%3===1)r.shadowMap.needsUpdate=true;r.render(scene,cam);
 }
 function rs(){var w=innerWidth,h=innerHeight;r.setSize(w,h);cam.aspect=w/h;vz=w/h<1?1.22:1;cam.fov=w/h<1?Math.min(88,2*Math.atan(.75/(w/h))*180/Math.PI):55;cam.updateProjectionMatrix()}
 addEventListener('resize',rs);rs();
@@ -714,7 +715,7 @@ addEventListener('pointerup',function(e){if(dr&&pd&&Math.hypot(e.clientX-pd.x,e.
 /* ---- time of day (follows the visitor's local clock) ---- */
 var HP=(function(){var m=/[?&]hour=([\d.]+)/.exec(location.search);return m?parseFloat(m[1])%24:null})();
 function KC(s){return new THREE.Color(s)}
-var NIGHT={sk:['#141c33','#1b2745','#1a2848','#131f3d','#0d1731','#08102a','#050b1c'],fog:'#151d36',hs:0x6f86c0,hg:0x2a2f45,hi:.5,dc:0x9fb4e8,di:.42,nf:1,gl:0,sa:1,cc:'#2b3556'};
+var NIGHT={sk:['#141c33','#1b2745','#1a2848','#131f3d','#0d1731','#08102a','#050b1c'],fog:'#151d36',hs:0x8ea2d4,hg:0x3a4060,hi:.85,dc:0xaec0ee,di:.6,nf:1,gl:0,sa:1,cc:'#2b3556'};
 function KY(h,o){var k={h:h};for(var n in o)k[n]=o[n];return k}
 var KEYS=[KY(0,NIGHT),KY(4.6,NIGHT),
  KY(5.2,{sk:['#2a2a4a','#4a3d5e','#7a5668','#4a4a74','#26335c','#141f45','#0a1230'],fog:'#4a4562',hs:0x9a8ab8,hg:0x4a3f50,hi:.5,dc:0xffb48a,di:.3,nf:.7,gl:0,sa:.5,cc:'#7a6a88'}),
