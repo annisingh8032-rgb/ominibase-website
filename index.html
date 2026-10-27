@@ -608,7 +608,7 @@ function camUpdate(dt){
 }
 function loop(ms){
   requestAnimationFrame(loop);var t=ms/1000,dt=Math.min(.05,t-(loop.p||t));loop.p=t;now=t;
-  q.a+=dt;if(++q.n>=60){var av=q.a/q.n;q.a=q.n=0;if(++q.k>2&&av>.034){var fl=Math.min(devicePixelRatio||1,mob?1.25:1.5);if(q.pr>fl){q.pr=Math.max(fl,q.pr-.25);r.setPixelRatio(q.pr)}else if(av>.045&&r.shadowMap.enabled){r.shadowMap.enabled=false;scene.traverse(function(o){var m=o.material;if(m)(Array.isArray(m)?m:[m]).forEach(function(x){x.needsUpdate=true})})}}}
+  q.a+=dt;if(++q.n>=60){var av=q.a/q.n;q.a=q.n=0;if(++q.k>2&&av>.034){var fl=Math.min(devicePixelRatio||1,mob?1.25:1.5);if(q.pr>fl){q.pr=Math.max(fl,q.pr-.25);r.setPixelRatio(q.pr)}}}
   var mp=me.position,gq=girl.position,k=Math.min(1,dt*2.5);
   if(tw){
     if(!tw.w){tw.w=1;yaw=wrap(yaw);spinL=0;auto=false}
