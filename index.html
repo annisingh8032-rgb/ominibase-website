@@ -428,7 +428,9 @@ function drawTag(){var g=tagC.getContext('2d');g.clearRect(0,0,256,64);
     g.fillStyle='#064e3b';g.textAlign='center';g.textBaseline='middle';g.fillText(cfg.name,128,y+h/2+1)}
   tagT.needsUpdate=true}
 var mP=person({skin:'#e3b08a',shirt:'#9a7a52',pants:'#3a4b66',hair:'#3a2318',shoe:'#3b2a1d',toon:1}),me=mP.g;
-scene.add(me);me.position.set(1.3,0,3.6);me.scale.setScalar(.97);me.add(tag);var mBlob=blob(1.3,3.6,.9,.9);
+scene.add(me);me.position.set(1.3,0,3.6);me.scale.setScalar(.97);me.add(tag);
+var wbC=document.createElement('canvas');wbC.width=320;wbC.height=80;(function(){var g=wbC.getContext('2d'),x=6,y=8,w=308,h=60,rd=30;g.beginPath();g.moveTo(x+rd,y);g.arcTo(x+w,y,x+w,y+h,rd);g.arcTo(x+w,y+h,x,y+h,rd);g.arcTo(x,y+h,x,y,rd);g.arcTo(x,y,x+w,y,rd);g.closePath();g.fillStyle='rgba(255,255,255,.96)';g.fill();g.lineWidth=4;g.strokeStyle='#10b981';g.stroke();g.fillStyle='#064e3b';g.font='700 30px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('Hello \ud83d\udc4b',160,40)})();
+var wb=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(wbC),transparent:true,depthTest:false,depthWrite:false,opacity:0}));wb.scale.set(1.4,.35,1);wb.position.set(0,2.3,0);wb.renderOrder=999;girl.add(wb);var mBlob=blob(1.3,3.6,.9,.9);
 
 /* ---- traffic & public ---- */
 var cars=[],peds=[],TR=M(0x101216);
@@ -606,7 +608,7 @@ function camUpdate(dt){
 }
 function loop(ms){
   requestAnimationFrame(loop);var t=ms/1000,dt=Math.min(.05,t-(loop.p||t));loop.p=t;now=t;
-  q.a+=dt;if(++q.n>=60){var av=q.a/q.n;q.a=q.n=0;if(++q.k>2&&av>.028){if(q.pr>.75){q.pr=Math.max(.75,q.pr-.25);r.setPixelRatio(q.pr)}else if(r.shadowMap.enabled){r.shadowMap.enabled=false;scene.traverse(function(o){var m=o.material;if(m)(Array.isArray(m)?m:[m]).forEach(function(x){x.needsUpdate=true})})}}}
+  q.a+=dt;if(++q.n>=60){var av=q.a/q.n;q.a=q.n=0;if(++q.k>2&&av>.034){var fl=Math.min(devicePixelRatio||1,mob?1.25:1.5);if(q.pr>fl){q.pr=Math.max(fl,q.pr-.25);r.setPixelRatio(q.pr)}else if(av>.045&&r.shadowMap.enabled){r.shadowMap.enabled=false;scene.traverse(function(o){var m=o.material;if(m)(Array.isArray(m)?m:[m]).forEach(function(x){x.needsUpdate=true})})}}}
   var mp=me.position,gq=girl.position,k=Math.min(1,dt*2.5);
   if(tw){
     if(!tw.w){tw.w=1;yaw=wrap(yaw);spinL=0;auto=false}
@@ -627,7 +629,11 @@ function loop(ms){
   }
   turn(me,tgtM,dt);turn(girl,tgtG,dt);turn(guard,(mode==='out'||mode==='greet')?Math.atan2(mp.x-guard.position.x,mp.z-guard.position.z):0,dt);
   walk2(mP,dt);var gv=walk2(gP,dt);walk2(guardP,dt);
-  gP.armA.rotation.z=.07;var bw=nodUntil>now?Math.sin((1-(nodUntil-now)/1.5)*Math.PI)*.5:0;gP.head.rotation.x=bw+(talking?.14+Math.sin(t*9)*.05:0);if(talking&&gv<.3){gP.armA.rotation.x=-.5;gP.armA.el.rotation.x=-.55-Math.sin(t*4)*.12}
+  var gr=(nodUntil>now&&gv<.3)?cl(1-(nodUntil-now)/1.8):-1,nw=gr>=0?ss(0,.2,gr)*(1-ss(.75,1,gr)):0,bw=gr>=0?Math.sin(cl(gr/.6)*Math.PI)*.25:0;
+  gP.armA.rotation.z=.07+(2.5+Math.sin(t*9)*.3-.07)*nw;gP.armB.rotation.z=-.07;
+  if(nw===0&&talking&&gv<.3){gP.armA.rotation.x=-.5;gP.armA.el.rotation.x=-.55-Math.sin(t*4)*.12}
+  gP.head.rotation.x=bw+(talking&&nw===0?.14+Math.sin(t*9)*.05:0);
+  wb.material.opacity=gr>=0?cl(gr/.1)*cl((1-gr)/.12):0;
   guardP.armA.rotation.z=gwave?2.5+Math.sin(t*9)*.3:.07;
   ceoP.head.rotation.y=Math.sin(t*.5)*.2;
   gBlob.position.set(girl.position.x,.02,girl.position.z);mBlob.position.set(me.position.x,.02,me.position.z);
@@ -729,7 +735,7 @@ $('go').onclick=function(){LS.n=cfg.name||LS.n||'';LS.save();
   $('intro').classList.add('off');mode='in';auto=false;
   tw={t0:now,dur:7,dc:0,c:curve([[1.3,0,3.6],[.4,0,1.6],[0,0,-1.5],[0,0,-5.2]]),g:null,
     done:function(){
-      mode='rec';nodUntil=now+1.5;$('spin').classList.add('on');
+      mode='rec';nodUntil=now+1.8;$('spin').classList.add('on');
       recUntil=now+2.5;
       say((LS.vis&&LS.vis.length?'Welcome back':'Hello')+(cfg.name?' '+cfg.name:'')+'! 😊 I\'m Aanya from the Ominibase reception. Which service are you here for?'+(LS.last!=null&&S[LS.last]?' (Last time: '+S[LS.last].n+'.)':'')+' Pick one below and I\'ll walk you to its chamber.')
     }}
@@ -788,7 +794,7 @@ function openRoom(i,from){LS.last=i;LS.vis=LS.vis||[];if(LS.vis.indexOf(i)<0)LS.
     else if(a==='dn'){window.open('https://wa.me/?text='+encodeURIComponent('Hi, '+DEMO[+v][0]+' was absent from today\'s Hip-Hop batch (7:00 AM). Please let us know if everything is okay.'),'_blank')}
     else if(a==='go')goRoom(+v);
     else if(a==='dm')wa(s.msg||'Hi Ominibase, I would like a demo of '+s.n+'.')};
-  nodUntil=now+1.5;
+  nodUntil=now+1.8;
 }
 var ray=new THREE.Raycaster(),mv=new THREE.Vector2(),pd=null;
 function pickCard(e){if(mode!=='room'||cur!==0)return null;mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);var h=ray.intersectObjects(dCards.map(function(c){return c.m}),false)[0];return h&&h.uv&&h.uv.y<.45?h:null}
