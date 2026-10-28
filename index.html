@@ -91,6 +91,12 @@ h1,h2{font-family:'Bricolage Grotesque','DM Sans',sans-serif;letter-spacing:-.02
 #room .sff{padding:16px}#room .sff label{display:block;font-size:13px;font-weight:700;color:#374151;margin:0 0 6px}#room .sff label i{color:#ef4444;font-style:normal}
 #room .sff input,#room .sff textarea{display:block;width:100%;padding:11px 12px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa;color:#111827;font:500 16px 'DM Sans',sans-serif}
 #room .sff textarea{min-height:100px;resize:vertical}#room .sff input:focus,#room .sff textarea:focus{outline:0;border-color:#56ab91;background:#fff;box-shadow:0 0 0 3px rgba(86,171,145,.18)}
+#room .sff select{display:block;width:100%;padding:11px 12px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa;color:#111827;font:500 16px 'DM Sans',sans-serif}#room .sff select:focus{outline:0;border-color:#56ab91;background:#fff;box-shadow:0 0 0 3px rgba(86,171,145,.18)}
+#room .sfimgs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}#room .sfimgs:empty{display:none}
+#room .sft{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;border:1.5px solid var(--line)}#room .sft img{width:100%;height:100%;object-fit:cover;display:block}
+#room .sft b{position:absolute;left:0;right:0;bottom:0;background:rgba(6,78,59,.78);color:#fff;font:700 10px 'DM Sans',sans-serif;text-align:center;padding:2px 0}
+#room .sft button{position:absolute;top:3px;right:3px;width:21px;height:21px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font:700 14px/21px sans-serif;cursor:pointer;padding:0}
+#room .sfhint{font-size:12px;color:#6b7280;margin:0 0 8px}#room .sff .sfadd{margin:0 0 6px;padding:10px 14px;font-size:14px}
 #room .sff .btn:disabled{opacity:.6;cursor:not-allowed}
 #room .sfok{padding:24px 18px;text-align:center}#room .sfok h3{font:800 20px 'Bricolage Grotesque',sans-serif;color:var(--deep);margin:10px 0 8px}#room .sfok p{font-size:14px;color:var(--mut);margin-bottom:16px}
 #room .sfi{width:56px;height:56px;border-radius:50%;background:#d1fae5;color:#059669;font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto}
@@ -98,6 +104,11 @@ h1,h2{font-family:'Bricolage Grotesque','DM Sans',sans-serif;letter-spacing:-.02
 #room [hidden]{display:none!important}
 #room #rhd{display:flex;justify-content:center;align-items:center;height:22px;margin:-12px 0 2px;cursor:ns-resize;touch-action:none;-webkit-user-select:none;user-select:none}
 #rhd i{display:block;width:46px;height:5px;border-radius:5px;background:#9fd8c0}#rhd:hover i,#rhd.dg i{background:var(--em)}
+#bm{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(6,40,30,.55);backdrop-filter:blur(3px)}#bm.on{display:flex}
+#bm .bx{width:min(400px,100%);max-height:92vh;overflow:auto;padding:20px}#bm h3{font:800 21px 'Bricolage Grotesque',sans-serif;color:var(--deep);margin-bottom:4px}#bm p{font-size:13.5px;color:var(--mut);margin-bottom:10px}
+#bm .pk{background:var(--mint);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--deep);white-space:pre-line;margin-bottom:10px}
+#bm label{display:block;font-size:12.5px;font-weight:700;color:var(--mut);margin:8px 0 5px}#bm input{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font:500 16px 'DM Sans',sans-serif}#bm input:focus{outline:0;border-color:var(--em2);box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+#bm .er{color:#b91c1c;font-size:12.5px;margin-top:6px;min-height:16px}#bm .btn{margin-top:10px}
 #ihd{position:sticky;top:0;z-index:3;display:flex;justify-content:center;align-items:center;height:22px;margin:-12px 0 2px;cursor:ns-resize;touch-action:none;-webkit-user-select:none;user-select:none}
 #ihd i{display:block;width:46px;height:5px;border-radius:5px;background:#9fd8c0}#ihd:hover i,#ihd.dg i{background:var(--em)}
 #intro.cmp>p,#intro.cmp label,#intro.cmp small{display:none}#intro.cmp h1{font-size:18px;margin:12px 0 6px}#intro.cmp #go{margin-top:10px}#intro.cmp #nm{padding:9px 12px}#intro.cmp .btn{padding:11px 16px}
@@ -125,6 +136,7 @@ h1,h2{font-family:'Bricolage Grotesque','DM Sans',sans-serif;letter-spacing:-.02
 <button class="btn pri" id="go">Enter the office</button></div>
 <div id="say" class="glass"><div class="who" id="who">Aanya · Reception</div><p id="stxt"></p><div id="opts"></div></div>
 <div id="room" class="glass"></div>
+<div id="bm"><div class="bx glass"><h3>Almost there!</h3><p>Enter your details. Gmail will open with your mail ready, you only press Send.</p><div class="pk" id="bpk"></div><label for="bn">Your name</label><input id="bn" maxlength="40" autocomplete="name" placeholder="Rahul Kumar"><label for="bp">Phone number</label><input id="bp" type="tel" inputmode="tel" maxlength="18" autocomplete="tel" placeholder="1234567891"><div class="er" id="ber"></div><button class="btn pri" id="bgo">Open Gmail</button><button class="btn sec" id="bx">Cancel</button></div></div>
 
 <script type="text/plain" id="omain">
 (function(){
@@ -159,12 +171,12 @@ faq:[['How long does setup take?','Within 2 hours of order confirmation, your da
 
 {n:'Web & Apps',f:'Custom Website & CMS Development',t:'A website people remember.',d:'A 100% custom, mobile-friendly website built around your brand and workflow. Pricing: custom quote based on your requirements.',
 feats:['Custom design & CMS','Mobile-first & responsive','Live draft link, revisions','Post-launch support'],
-steps:[['Share your requirement','Tell us what kind of website you need (business, CMS, restaurant, e-commerce, portfolio) on WhatsApp.'],['We design & build','Our team creates a fully custom, mobile-friendly website matching your brand and content.'],['Review & revisions','Check the draft on a live link. We make changes until you are fully satisfied.'],['Launch & support','Your website goes live on your domain, with ongoing support for updates and issues.']],
+steps:[['Share your requirement','Tell us what kind of website you need (business, CMS, restaurant, e-commerce, portfolio) by email.'],['We design & build','Our team creates a fully custom, mobile-friendly website matching your brand and content.'],['Review & revisions','Check the draft on a live link. We make changes until you are fully satisfied.'],['Launch & support','Your website goes live on your domain, with ongoing support for updates and issues.']],
 info:[['Delivery time','Depends on complexity, confirmed upfront'],['Mobile friendly','Every website is fully responsive'],['Support','Post-launch support included'],['Pricing','Custom quote based on your requirement'],['Final delivery','Once the website is final, no detail is replaced or updated for free. Later changes are charged separately.']],
 work:[['Shyam Auto Accessories','A modern e-commerce platform for premium motorcycle parts and riding gear, with bike collections and fast mobile checkout.','https://shyamautoaccessories.in/'],['Mayuri Dance & Fitness Academy','A mobile-first website with online admission forms, batch schedules, choreo galleries and WhatsApp enquiry.','https://mayuridance.in/'],['Pragyanjali Yoga Center','A serene wellness website with daily batch schedules, instructor profiles and 1-click class booking.','https://pragyanjaliyoga.com/'],['Jagashilp','An app-like store for personalized gifts, mugs, keychains, tote bags and t-shirts, with category filters.','https://www.jagashilp.in/'],['S2 Events Patna','A high-energy Disco Dandiya event page with live passes (stag, couple, group) and instant checkout.','https://s2eventspatna.in/']],
 terms:[['Advance payment','Taken before the work starts.'],['70% ready','Second payment when the website is 70% ready.'],['Final payment','Last payment once the website is 100% final.'],['Refund policy','If we cannot deliver your website, you get a full refund. If you cancel midway, the remaining amount is refunded after a deduction.']],
-u:'Studios, coaching, restaurants, e-commerce, portfolios, events',cta:'Chat on WhatsApp about your website',msg:'Hi Ominibase! I want to know details about getting a custom website built.',
-faq:[['How long does it take to build a website?','It depends on the complexity. The exact timeline is confirmed when the project starts.'],['Will it work on mobile, tablet and desktop?','Yes. Every custom website is 100% responsive.'],['Can I see a live design before we start?','You can open the Full Preview of the templates (CMS, Business, Restaurant, E-Commerce, Portfolio) and discuss your order on WhatsApp.'],['Are changes free after the website is final?','During review you can request all changes on the draft link. After final launch, new features or changes are charged separately.']]},
+u:'Studios, coaching, restaurants, e-commerce, portfolios, events',cta:'Email us about your website',msg:'Hi Ominibase! I want to know details about getting a custom website built.',
+faq:[['How long does it take to build a website?','It depends on the complexity. The exact timeline is confirmed when the project starts.'],['Will it work on mobile, tablet and desktop?','Yes. Every custom website is 100% responsive.'],['Can I see a live design before we start?','You can open the Full Preview of the templates (CMS, Business, Restaurant, E-Commerce, Portfolio) and discuss your order by email.'],['Are changes free after the website is final?','During review you can request all changes on the draft link. After final launch, new features or changes are charged separately.']]},
 
 {n:'Form Builder',f:'Custom Professional Forms',t:'Professional forms, built for you.',d:'Tell us your requirements and we build a beautiful, mobile-friendly form with every response saved straight to your Google Sheet. Ready in 72 hours. Starting at ₹100, final cost depends on customization.',
 feats:['Google Sheet sync','Mobile-first design','Shareable link','100% custom design'],
@@ -172,7 +184,7 @@ steps:[['You tell us','Share the fields, design and purpose.'],['We build it','A
 forms:['Summer Camp Registration','School Admission','Job Application','Patient Appointment','Event Registration','Business Enquiry','Coaching Enrollment','Customer Feedback','Gym Membership','Employee Leave','Product Order','Workshop Registration','Internship Application','Yoga / Fitness Enrollment','Volunteer Registration','Survey / Poll'],
 fnote:'All templates start at ₹100+ and can be customized. Categories: Education, Events, Business, Health, HR/Jobs, Others.',
 why:['Google Sheets integration: submissions land in your sheet live','Mobile first: perfect on phone, tablet and desktop','100% custom: your colors, logo and fields','Shareable link: WhatsApp, Instagram, your website','Secure & reliable: no downtime, no data loss'],
-u:'Academies, events, schools, clinics, HR, coaching, workshops',cta:'Order a form on WhatsApp',msg:'Hi, I want to order a custom professional form. Please share details and pricing.',
+u:'Academies, events, schools, clinics, HR, coaching, workshops',cta:'Order a form by email',msg:'Hi, I want to order a custom professional form. Please share details and pricing.',
 faq:[['How long does a custom form take?','Within 72 hours of order confirmation.'],['Where is the data saved?','As soon as someone submits the form, the data is saved in real time to your Google Sheet, and a confirmation goes to your email.'],['Will the form open on mobile and computer?','Yes. It is 100% mobile-friendly and works in any browser.'],['Can I share it on WhatsApp or social media?','Yes. You get a unique direct link to share on WhatsApp, your Instagram bio, your website or Facebook.'],['Can I change columns after the form is delivered?','Once delivered, no field is replaced or updated for free. Adding a new field or changing the structure is charged separately.']]},
 
 {n:'Help & Support',f:'Support & query form',t:'Any problem? Tell us right here.',d:'Need help with setup, training or any issue? Fill the support form and our team will reply within 24 hours.',feats:['Quick reply from our team','Setup & installation help','Issue / bug reports','New feature requests'],u:'All Ominibase customers',cta:'Raise a query',sup:1,
@@ -276,7 +288,22 @@ var webC=document.createElement('canvas');webC.width=1024;webC.height=640;var we
 function webTick(t){var P=3.8,i=Math.floor(t/P)%WKS.length,ph=t%P,f=ph>P-.6?(ph-(P-.6))/.6:0,key=i*20+Math.round(f*10);if(key===webK)return;webK=key;
  webG.setTransform(2,0,0,2,0,0);drawSite(webG,i);if(f>0){webG.globalAlpha=f;drawSite(webG,(i+1)%WKS.length);webG.globalAlpha=1}webT.needsUpdate=true}
 webTick(0);
-var formT=cv(256,340,function(g){g.fillStyle='#fff';g.fillRect(0,0,256,340);g.fillStyle='#059669';g.fillRect(0,0,256,40);g.fillStyle='#fff';g.font='700 20px sans-serif';g.fillText('Admission Form',16,27);g.strokeStyle='#10b981';g.lineWidth=2;g.setLineDash([6,4]);for(var i=0;i<4;i++){g.strokeRect(16,62+i*58,224,40)}g.setLineDash([]);g.fillStyle='#059669';g.fillRect(16,292,224,34);g.fillStyle='#fff';g.fillText('Submit',96,316)});
+function mkForm(title,fs,btn){return cv(256,340,function(g){
+  g.fillStyle='#fff';g.fillRect(0,0,256,340);g.fillStyle='#059669';g.fillRect(0,0,256,40);g.fillStyle='#fff';g.font='700 19px sans-serif';g.textAlign='left';g.textBaseline='middle';g.fillText(title,16,21);
+  g.fillStyle='#a7f3d0';g.beginPath();g.arc(232,20,5,0,7);g.fill();
+  fs.forEach(function(f,i){var y=52+i*59;
+    g.fillStyle='#475569';g.font='700 11px sans-serif';g.fillText(f[0],16,y+7);
+    g.fillStyle='#f1f5f9';g.fillRect(16,y+16,224,32);g.strokeStyle='#cbd5e1';g.lineWidth=1.5;g.strokeRect(16.5,y+16.5,223,31);
+    g.fillStyle='#10b981';g.fillRect(16,y+16,4,32);
+    g.fillStyle='#0f172a';g.font='600 14px sans-serif';g.fillText(f[1],28,y+33);
+    if(f[2]==='dd'){g.fillStyle='#059669';g.beginPath();g.moveTo(218,y+29);g.lineTo(230,y+29);g.lineTo(224,y+37);g.closePath();g.fill()}
+    if(f[2]==='ok'){g.strokeStyle='#059669';g.lineWidth=2.5;g.beginPath();g.moveTo(216,y+32);g.lineTo(222,y+38);g.lineTo(232,y+26);g.stroke()}
+    if(f[2]==='st'){g.fillStyle='#f59e0b';g.font='700 16px sans-serif';g.textAlign='right';g.fillText('★★★★★',232,y+33);g.textAlign='left'}
+  });
+  g.fillStyle='#059669';g.fillRect(16,292,224,34);g.fillStyle='#fff';g.font='800 15px sans-serif';g.textAlign='center';g.fillText(btn,128,310);g.textAlign='left'})}
+var formT=mkForm('Admission Form',[['Student name','Aarav Sharma','ok'],['Phone number','1234567891','ok'],['Batch','Hip-Hop, 7:00 AM','dd'],['Guardian name','Rakesh Sharma','ok']],'Submit');
+var formT2=mkForm('Event Registration',[['Full name','Priya Singh','ok'],['Email','priya@gmail.com','ok'],['Pass type','Couple Pass','dd'],['Tickets','2','dd']],'Register');
+var formT3=mkForm('Feedback Form',[['Your name','Rohan Verma','ok'],['Class attended','Yoga, Morning','dd'],['Rating','','st'],['Comments','Loved the class!','ok']],'Send');
 function scr(title,fn){return cv(512,320,function(g){g.fillStyle='#fff';g.fillRect(0,0,512,320);g.fillStyle='#059669';g.fillRect(0,0,512,48);g.fillStyle='#fff';g.font='800 26px sans-serif';g.textBaseline='middle';g.textAlign='left';g.fillText(title,18,25);fn(g)})}
 function pill(g,x,y,w,h,c,t,fs){g.fillStyle=c;g.fillRect(x,y,w,h);g.fillStyle='#fff';g.font='800 '+(fs||18)+'px sans-serif';g.textAlign='center';g.fillText(t,x+w/2,y+h/2+1)}
 function srow(g,y,name,sub,c,t){g.fillStyle='#f0fdf8';g.fillRect(14,y,484,54);g.fillStyle='#a7f3d0';g.beginPath();g.arc(46,y+27,18,0,7);g.fill();g.fillStyle='#064e3b';g.textAlign='center';g.font='800 20px sans-serif';g.fillText(name.charAt(0),46,y+28);g.textAlign='left';g.font='700 22px sans-serif';g.fillText(name,78,y+19);g.fillStyle='#64748b';g.font='500 16px sans-serif';g.fillText(sub,78,y+40);pill(g,364,y+10,120,34,c,t,16)}
@@ -512,7 +539,7 @@ var gP=person({skin:'#efc29d',shirt:'#059669',pants:'#222a35',hair:'#1c1714',fem
 scene.add(girl);girl.position.set(0,0,-9.8);girl.scale.setScalar(.97);B(.07,.04,.01,W,.09,1.3,.13,girl);var gBlob=blob(0,-9.8,.9,.9);
 var cfg={name:''};
 var tagC=document.createElement('canvas');tagC.width=256;tagC.height=64;
-var tagT=new THREE.CanvasTexture(tagC),tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tagT,transparent:true,depthTest:false,depthWrite:false}));tag.scale.set(.9,.225,1);tag.position.set(0,2.2,0);tag.renderOrder=999;
+var tagT=new THREE.CanvasTexture(tagC),tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tagT,transparent:true,depthTest:false,depthWrite:false}));tag.scale.set(.9,.225,1);tag.position.set(0,2.06,0);tag.renderOrder=999;
 function drawTag(){var g=tagC.getContext('2d');g.clearRect(0,0,256,64);
   if(cfg.name){g.font='700 24px sans-serif';var w=Math.min(244,g.measureText(cfg.name).width+34),x=128-w/2,y=16,h=34,r=17;
     g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();
@@ -603,12 +630,22 @@ function web(X){
   anim.push(webTick);anim.push(function(t){br.position.y=1.9+Math.sin(t*1.2)*.1;br.rotation.y=Math.sin(t*.5)*.2;cs.forEach(function(c,i){var a=t*.6+i*1.57;c.position.set(X+Math.cos(a)*2,1.6+Math.sin(t+i)*.4,-22.3+Math.sin(a)*1.1);c.rotation.x=t*.7;c.rotation.y=t*.9})});
 }
 function frm(X){
-  [[-1.5,0],[-.6,-.35],[.3,-.7]].forEach(function(p,i){var c=plane(1.2,1.6,formT,X+p[0],1.55,-21.4+p[1]);c.rotation.y=.25;anim.push(function(t){c.position.y=1.55+Math.sin(t*1.2+i*2)*.08})});
-  for(var i=0;i<3;i++)cyl(.55,.55,.28,i%2?GR:MI,X+2,.3+i*.32,-22);
-  var A=v3(X-.1,1.5,-22.1),Bp=v3(X+2,1.3,-22),dots=[];
-  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([A,Bp]),new THREE.LineBasicMaterial({color:0x10b981})));
-  for(var j=0;j<6;j++)dots.push(sph(.06,bas(0x059669),0,0,0));
-  anim.push(function(t){dots.forEach(function(d,j){d.position.lerpVectors(A,Bp,(t*.4+j/6)%1)})});
+  var FT=[formT,formT2,formT3];
+  [[-1.5,0],[-.6,-.35],[.3,-.7]].forEach(function(p,i){var c=plane(1.2,1.6,FT[i],X+p[0],1.55,-21.4+p[1]);c.rotation.y=.25;anim.push(function(t){c.position.y=1.55+Math.sin(t*1.2+i*2)*.08})});
+  var topM=M(0xd1fae5,{emissive:0x10b981,emissiveIntensity:0});
+  for(var i=0;i<3;i++)cyl(.55,.55,.28,i===2?topM:(i%2?GR:MI),X+2,.3+i*.32,-22);
+  plane(1.3,.26,cv(260,52,function(g){g.fillStyle='#064e3b';g.fillRect(0,0,260,52);g.fillStyle='#10b981';g.fillRect(0,48,260,4);g.fillStyle='#fff';g.font='800 22px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('LIVE DATA',130,26)}),X+2,1.52,-22);
+  var A=v3(X+.9,1.7,-22.1),Bp=v3(X+2,1.25,-22),curve3=new THREE.QuadraticBezierCurve3(A,v3(X+1.45,2.45,-22.1),Bp);
+  scene.add(new THREE.Mesh(new THREE.TubeGeometry(curve3,28,.012,5,false),new THREE.MeshBasicMaterial({color:0x10b981,transparent:true,opacity:.45})));
+  var pk=cv(64,64,function(g){g.fillStyle='rgba(16,185,129,.35)';g.beginPath();g.arc(32,32,30,0,7);g.fill();g.fillStyle='#fff';g.fillRect(16,10,32,44);g.fillStyle='#059669';g.fillRect(16,10,32,10);g.fillStyle='#10b981';[26,34,42].forEach(function(y){g.fillRect(21,y,22,3)})});
+  var pks=[],N=5,last=[];
+  for(var j=0;j<N;j++){var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:pk,transparent:true,fog:false}));sp.scale.set(.3,.3,1);scene.add(sp);pks.push(sp);last.push(0)}
+  var pulse=0,lt=0;
+  anim.push(function(t){var dt=Math.min(.1,t-lt);lt=t;
+    pks.forEach(function(sp,j){var u=(t*.3+j/N)%1,e=u*u*(3-2*u);sp.position.copy(curve3.getPoint(e));
+      var sc=u>.82?.3*(1-(u-.82)/.18*.8):.3,o=u>.9?1-(u-.9)/.1:1;sp.scale.set(sc,sc,1);sp.material.opacity=o;
+      if(u<last[j]-.5)pulse=1;last[j]=u});
+    pulse=Math.max(0,pulse-dt*2.2);topM.emissiveIntensity=pulse*.9})
 }
 [ams,cms,web,frm].forEach(function(f,i){f(XS[i])});
 
@@ -817,6 +854,20 @@ function tick(){applyTime(HP!==null?HP:virt(new Date()))}
 tick();if(HP===null){setInterval(tick,30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)tick()})}
 requestAnimationFrame(loop);
 
+/* ---- Buy Now: opens a ready Gmail draft (to, subject, name, phone) ---- */
+var MAILTO='ominibase.online@gmail.com',bmD=null;
+function buyMail(sub,det,enq){bmD={sub:sub,det:det,enq:enq};$('bpk').textContent=det;$('bn').value=cfg.name||'';var ph='';try{ph=localStorage.getItem('ominibase_ph')||''}catch(e){}$('bp').value=ph;$('ber').textContent='';$('bm').classList.add('on');setTimeout(function(){($('bn').value?$('bp'):$('bn')).focus()},60)}
+function bmClose(){$('bm').classList.remove('on')}
+$('bx').onclick=bmClose;$('bm').addEventListener('pointerdown',function(e){if(e.target===this)bmClose()});
+$('bp').oninput=function(){this.value=this.value.replace(/[^\d+\s\-()]/g,'')};
+$('bgo').onclick=function(){var n=$('bn').value.trim(),ph=$('bp').value.trim();
+  if(!n){$('ber').textContent='Please enter your name.';return}
+  if(ph.replace(/\D/g,'').length<10){$('ber').textContent='Phone number must have at least 10 digits.';return}
+  try{localStorage.setItem('ominibase_ph',ph)}catch(e){}
+  var su=(bmD.enq?'':'Order: ')+bmD.sub,body='Dear Ominibase Team,\n\n'+(bmD.enq?'':'I would like to buy the following plan:\n\n')+bmD.det+'\n\n'+(bmD.enq?'Please contact me with more details.':'Please contact me to complete the order.')+'\n\nThank you,\n'+n+'\nPhone: '+ph+'\n';
+  bmClose();
+  if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||mob)location.href='mailto:'+MAILTO+'?subject='+encodeURIComponent(su)+'&body='+encodeURIComponent(body);
+  else window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(MAILTO)+'&su='+encodeURIComponent(su)+'&body='+encodeURIComponent(body),'_blank')};
 /* ---- resizable chamber panel (height is remembered for every service) ---- */
 var roomH=0;try{roomH=parseInt(localStorage.getItem('ominibase_roomh'))||0}catch(e){}
 function rhMax(){return innerHeight-64-(mob?10:18)}
@@ -894,19 +945,39 @@ function closeForm(){
   var R=$('room');if(formStash){R.innerHTML=formStash.h;R.scrollTop=formStash.st;formStash=null}
   lvl=2
 }
-function openForm(){
+var sfImgs=[],sfBusy=0;
+function sfCompress(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file),im=new Image();
+  im.onload=function(){URL.revokeObjectURL(u);var best=null,sz=[720,560,440,340,260,200,150];
+    for(var a=0;a<sz.length;a++){var sc=Math.min(1,sz[a]/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*sc)),h=Math.max(1,Math.round(im.height*sc)),c=document.createElement('canvas');c.width=w;c.height=h;var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,w,h);g.drawImage(im,0,0,w,h);
+      for(var q=7;q>=2;q--){var d=c.toDataURL('image/jpeg',q/10),b=d.split(',')[1],by=Math.floor(b.length*3/4);best={data:b,url:d,kb:Math.round(by/102.4)/10,by:by};if(by<=10240){res(best);return}}}
+    res(best)};
+  im.onerror=function(){URL.revokeObjectURL(u);rej()};im.src=u})}
+function sfRender(){var b=$('sfimgs');if(!b)return;b.innerHTML=sfImgs.map(function(im,i){return '<div class="sft"><img src="'+im.url+'" alt="Attached image '+(i+1)+'"><b>'+im.kb+' KB</b><button type="button" data-a="sfrm" data-v="'+i+'" aria-label="Remove image">×</button></div>'}).join('');
+  $('sfcnt').textContent=sfImgs.length+'/4';$('sfaddb').hidden=sfImgs.length>=4}
+function sfAdd(files){var er=$('sferi');er.hidden=true;var room=4-sfImgs.length,list=Array.prototype.slice.call(files).slice(0,room),bad=0;
+  if(files.length>room){er.textContent='Only 4 images are allowed.';er.hidden=false}
+  if(!list.length)return;sfBusy++;$('sfaddb').disabled=true;$('sfaddb').textContent='Compressing...';
+  list.reduce(function(p,f){return p.then(function(){return sfCompress(f).then(function(r){sfImgs.push(r)},function(){bad++})})},Promise.resolve()).then(function(){
+    sfBusy--;var b=$('sfaddb');if(b){b.disabled=false;b.textContent='+ Add images'}
+    if(bad){er.textContent='Some files could not be read as images.';er.hidden=false}sfRender()})}
+function openForm(){sfImgs=[];sfBusy=0;
   var R=$('room');formStash={h:R.innerHTML,st:R.scrollTop};
   R.innerHTML='<div class="sfv"><button class="chip sfb" data-a="sfx">← Back to Help &amp; Support</button>'
-   +'<div id="sfbox" class="sfbox"><div class="sfh"><b>Ominibase Support</b><span>Hum aapki madad ke liye tayyar hain</span></div>'
+   +'<div id="sfbox" class="sfbox"><div class="sfh"><b>Ominibase Support</b></div>'
    +'<form id="sfform" class="sff" autocomplete="on"><div id="sferr" class="sfe" hidden></div>'
    +'<label for="sfn">Naam <i>*</i></label><input id="sfn" name="name" type="text" placeholder="Rahul Kumar" required>'
-   +'<label for="sfp">Phone <i>*</i></label><input id="sfp" name="phone" type="tel" inputmode="tel" placeholder="+91 98765 43210" required minlength="10" maxlength="18">'
+   +'<label for="sfp">Phone <i>*</i></label><input id="sfp" name="phone" type="tel" inputmode="tel" placeholder="1234567891" required minlength="10" maxlength="18">'
    +'<label for="sfm">Email <i>*</i></label><input id="sfm" name="email" type="email" placeholder="example@gmail.com" required>'
+   +'<label for="sfs">Service <i>*</i></label><select id="sfs" name="service" required><option value="">Select a service</option><option>Attendance</option><option>Control Management System</option><option>Website</option><option>Custom Form</option></select>'
    +'<label for="sfq">Problem <i>*</i></label><textarea id="sfq" name="problem" placeholder="Apni problem detail mein likhein..." required></textarea>'
+   +'<label>Images <span style="font-weight:500;color:#6b7280">(optional, max 4)</span> <span id="sfcnt" style="font-weight:500;color:#6b7280">0/4</span></label>'
+   +'<div class="sfhint">Add screenshots of the problem. Each image is automatically compressed to about 10 KB.</div>'
+   +'<div id="sfimgs" class="sfimgs"></div><div id="sferi" class="sfe" hidden></div>'
+   +'<button type="button" class="btn sec sfadd" id="sfaddb" data-a="sfimg">+ Add images</button><input id="sfile" type="file" accept="image/*" multiple hidden>'
    +'<button type="submit" class="btn pri" id="sfgo">Submit Query</button>'
    +'<button type="button" class="btn sec" data-a="sfx">Cancel</button></form>'
    +'<div id="sfok" class="sfok" hidden><div class="sfi">✓</div><h3>Query Submitted!</h3><p>Aapki query hume mil gayi hai. Hamari team 24 hours ke andar aapko reply karegi.</p><button type="button" class="btn pri" data-a="sfx">Theek Hai</button></div></div></div>';
-  R.scrollTop=0;lvl=3;want=3;history.pushState({d:3},'');
+  R.scrollTop=0;lvl=3;want=3;$('sfile').onchange=function(){sfAdd(this.files);this.value=''};history.pushState({d:3},'');
   setTimeout(function(){var n=$('sfn');n&&n.focus({preventScroll:true})},350)
 }
 function reconcile(){
@@ -914,9 +985,10 @@ function reconcile(){
   if(want>lvl){history.go(lvl-want);return}
   if(want<lvl){if(lvl===3)closeForm();else if(lvl===2)toRec();else if(lvl===1)exitOffice();reconcile()}
 }
-addEventListener('popstate',function(e){want=(e.state&&typeof e.state.d==='number')?e.state.d:0;reconcile()});
+addEventListener('popstate',function(e){bmClose();want=(e.state&&typeof e.state.d==='number')?e.state.d:0;reconcile()});
 function goRoom(j){if(mode!=='room'||j===cur)return;var f=cur;travel(route2(f,j),j,f)}
-function wa(m){if(CFG.whatsapp)window.open('https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent(m),'_blank');else if(CFG.email)location.href='mailto:'+CFG.email+'?subject='+encodeURIComponent(m);else window.open('https://ominibase.online','_blank')}
+function wa(m,sub){buyMail(sub||'Enquiry',String(m).replace(/^Hi[,!]?\s*(Ominibase[!,.]?\s*)?/i,''),1)}
+function wa_old(m){if(CFG.whatsapp)window.open('https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent(m),'_blank');else if(CFG.email)location.href='mailto:'+CFG.email+'?subject='+encodeURIComponent(m);else window.open('https://ominibase.online','_blank')}
 function inr(n){return '₹'+n.toLocaleString('en-IN')}
 function sec(t,h){return '<div class="mt">'+t+'</div>'+h}
 function tags(a){return a.map(function(x){return '<span class="tag">'+x+'</span>'}).join('')}
@@ -961,22 +1033,25 @@ function openRoom(i,from){LS.last=i;LS.vis=LS.vis||[];if(LS.vis.indexOf(i)<0)LS.
   R.onclick=function(e){var b=e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a'),v=b.getAttribute('data-v');
     if(a==='cm'||a==='cd'||a==='cc'){cs[a==='cm'?'m':a==='cd'?'d':'c']=v;$('cmsbox').innerHTML=cmsH()}
     else if(a==='cb'){var on=cs.m==='online',dv=on?'single':cs.d,t=CT[+v],pr=CP[dv][cs.c][+v]+(on?120:0),cat=CC.filter(function(c){return c[0]===cs.c})[0][1];
-      wa("Hi, I'd like to get this CMS plan:\n\nVersion: "+(on?'Online (Any Device)':'Software (Windows / Mac)')+"\nCategory: "+cat+"\n"+(on?'':'Device: '+CD.filter(function(d){return d[0]===cs.d})[0][1]+"\n")+"Duration: "+t[1]+"\nPrice: "+inr(pr)+"\n\nPlease let me know the next steps.")}
-    else if(a==='pb'){var p=s.plans[+v];wa('Hi, I want the '+s.n+' '+p[0]+' plan ('+p[2]+', '+p[1]+'). Please share the next steps.')}
+      buyMail('CMS Plan - '+t[0]+' ('+inr(pr)+')',"Service: CMS\nVersion: "+(on?'Online (Any Device)':'Software (Windows / Mac)')+"\nCategory: "+cat+"\n"+(on?'':'Device: '+CD.filter(function(d){return d[0]===cs.d})[0][1]+"\n")+"Duration: "+t[1]+"\nPrice: "+inr(pr))}
+    else if(a==='pb'){var p=s.plans[+v];buyMail(s.n+' Plan - '+p[0]+' ('+p[1]+')','Service: '+s.n+'\nPlan: '+p[0]+'\nDuration: '+p[2]+'\nPrice: '+p[1])}
     else if(a==='ds'){var q=v.split(':');setSt(+q[0],+q[1])}
     else if(a==='dall'){for(var z=0;z<dSt.length;z++)dSt[z]=1;refreshDemo()}
     else if(a==='drs'){for(var z2=0;z2<dSt.length;z2++)dSt[z2]=0;refreshDemo()}
     else if(a==='dn'){window.open('https://wa.me/?text='+encodeURIComponent('Hi, '+DEMO[+v][0]+' was absent from today\'s Hip-Hop batch (7:00 AM). Please let us know if everything is okay.'),'_blank')}
     else if(a==='go')goRoom(+v);
     else if(a==='sf')openForm();
+    else if(a==='sfimg'){$('sfile').click()}
+    else if(a==='sfrm'){sfImgs.splice(+v,1);sfRender()}
     else if(a==='sfx'){if(lvl===3)history.back()}
-    else if(a==='dm')wa(s.msg||'Hi Ominibase, I would like a demo of '+s.n+'.')};
+    else if(a==='dm')wa(s.msg||'I would like a demo of '+s.n+'.',s.n+' - Enquiry')};
   R.oninput=function(e){if(e.target.id==='sfp')e.target.value=e.target.value.replace(/[^\d+\s\-()]/g,'')};
   R.onsubmit=function(e){if(e.target.id!=='sfform')return;e.preventDefault();
-    var d={name:$('sfn').value.trim(),phone:$('sfp').value.trim(),email:$('sfm').value.trim(),problem:$('sfq').value.trim()},b=$('sfgo');
+    var d={name:$('sfn').value.trim(),phone:$('sfp').value.trim(),email:$('sfm').value.trim(),problem:$('sfq').value.trim(),service:$('sfs').value,images:sfImgs.map(function(im,i){return{name:'image'+(i+1)+'.jpg',mime:'image/jpeg',data:im.data}})},b=$('sfgo');
+    if(sfBusy){var e2=$('sferr');e2.textContent='Please wait, images are being compressed.';e2.hidden=false;return}
     if(d.phone.replace(/\D/g,'').length<10){var er=$('sferr');er.textContent='Phone number kam se kam 10 digit ka likhein.';er.hidden=false;return}$('sferr').hidden=true;b.disabled=true;b.textContent='Submitting...';
     fetch(SUP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)}).then(function(r){return r.json()}).then(function(j){if(j.status!=='success')console.error('Support form error:',j.message)}).catch(function(x){console.error('Support form network error:',x)});
-    setTimeout(function(){$('sfform').reset();$('sfform').hidden=true;$('sfok').hidden=false;b.disabled=false;b.textContent='Submit Query'},400)};
+    setTimeout(function(){sfImgs=[];sfRender();$('sfform').reset();$('sfform').hidden=true;$('sfok').hidden=false;b.disabled=false;b.textContent='Submit Query'},400)};
   nodUntil=now+1.8;
 }
 var ray=new THREE.Raycaster(),mv=new THREE.Vector2(),pd=null;
