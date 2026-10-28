@@ -1,0 +1,96 @@
+<link href="/g/fonts.css2?family=Poppins:wght@400;500;600;700;800&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+/* Scoped to .ob-legal only. Nothing here touches the site header, menu or footer. */
+body:has(.ob-legal){background:linear-gradient(135deg,#003b2f 0%,#00291f 100%) fixed}
+.ob-legal{--bg:#003b2f;--bg2:#00291f;--card:rgba(255,255,255,0.04);--accent:#d4ff74;--text:#ffffff;--muted:#a8c8a0;--border:rgba(212,255,116,0.2);
+  position:relative;box-sizing:border-box;width:100%;max-width:820px;margin:0 auto;padding:60px 24px 100px;color:var(--text);line-height:1.7;font-family:'DM Sans',sans-serif;
+  background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);text-align:left}
+.ob-legal *,.ob-legal *::before,.ob-legal *::after{box-sizing:border-box}
+.ob-legal h1,.ob-legal h2,.ob-legal h3,.ob-legal p,.ob-legal ul,.ob-legal li,.ob-legal section,.ob-legal div{margin:0;padding:0;text-transform:none;letter-spacing:normal}
+.ob-legal .top-badge{display:inline-block;padding:6px 16px;border:1px solid var(--border);border-radius:50px;font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.ob-legal h1{font-family:'Poppins',sans-serif;font-size:clamp(30px,5vw,44px);font-weight:800;line-height:1.2;margin-bottom:10px;background:linear-gradient(135deg,#d4ff74,#a8f060);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.ob-legal .updated{font-size:14px;color:var(--muted);margin-bottom:36px}
+.ob-legal .intro{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 24px;font-size:15px;color:#dfeee4;margin-bottom:40px}
+.ob-legal .intro b{color:var(--accent)}
+.ob-legal section{margin-bottom:34px}
+.ob-legal .section-block{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 24px;margin-bottom:18px}
+.ob-legal h2{font-family:'Poppins',sans-serif;font-size:19px;font-weight:700;line-height:1.35;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.ob-legal h3{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:#fff;margin:6px 0 8px}
+.ob-legal h2 .num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(212,255,116,0.12);border:1px solid var(--border);font-size:13px;color:var(--accent);flex-shrink:0}
+.ob-legal p{font-size:15px;color:#dfeee4;margin-bottom:12px}
+.ob-legal ul{list-style:disc;margin:10px 0 12px 20px}
+.ob-legal li{font-size:15px;color:#dfeee4;margin-bottom:10px;padding-left:6px;list-style:disc}
+.ob-legal li b,.ob-legal p b{color:#fff}
+.ob-legal a{color:var(--accent);text-decoration:none}
+.ob-legal a:hover{text-decoration:underline}
+.ob-legal code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px;font-size:13px}
+.ob-legal .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--bg2);background:var(--accent);padding:3px 10px;border-radius:50px;margin-bottom:10px}
+.ob-legal .contact-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:10px}
+.ob-legal .contact-row{display:flex;gap:10px;font-size:14px;margin-bottom:8px;color:#dfeee4;flex-wrap:wrap}
+.ob-legal .contact-row b{color:var(--accent);min-width:80px}
+@media (max-width:480px){.ob-legal{padding:40px 18px 70px}.ob-legal .section-block{padding:18px 16px}}
+</style>
+<div class="ob-legal">
+  <div class="top-badge">Legal</div>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: September 14, 2026</div>
+
+  <div class="intro">
+    This Privacy Policy explains how <b>Ominibase</b> ("we", "us", "our") handles information for our software products and services, including Ominibase CMS (studio/business management software), Ominibase AMS (attendance management software), Custom Forms, and Website Development services — collectively referred to as "the Software and Services".
+  </div>
+
+  <section>
+    <h2><span class="num">1</span>Where Your Data Lives</h2>
+    <p>The Software is designed to store your business data — students, batches, fees, payments, teachers, and related records — locally on your own device, inside the app's local database. We do not operate a central server that stores this data on your behalf, unless you explicitly choose to use the optional backup or cloud features described below.</p>
+  </section>
+  <section>
+    <h2><span class="num">2</span>Google Drive Backup (Optional)</h2>
+    <p>The Software includes an optional feature that lets you connect your own Google account to automatically back up your data as a JSON file to your own Google Drive. This feature is entirely optional and only runs if you choose to turn it on. If you use it:</p>
+    <ul>
+      <li>We request access only to files that the Software itself creates in your Drive, inside a folder named <b>"Ominibase CMS Backups"</b> (using Google's restricted <code>drive.file</code> scope). We cannot see, read, or modify any other files in your Google Drive.</li>
+      <li>Your backup file contains only the business data you have entered into the Software (students, fees, batches, etc.). We do not add any tracking, analytics, or advertising data to this file.</li>
+      <li>The backup is uploaded directly from your device to your own Google Drive. We do not have a copy of this file on any Ominibase server, and we do not access, view, sell, or share the contents of your backup with any third party.</li>
+      <li>You can disconnect your Google account from the Software at any time from within the app's Settings, which stops all future backups. You can also revoke the Software's access at any time from your Google Account permissions page at <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>.</li>
+      <li>We do not use your Google user data for advertising, and we do not transfer it to any other party except as required to provide the backup feature itself (i.e., uploading it to your own Drive via Google's API).</li>
+    </ul>
+  </section>
+  <section>
+    <h2><span class="num">3</span>Information We May Collect</h2>
+    <p>Depending on which part of the Software or Services you use, we may collect:</p>
+    <ul>
+      <li><b>License &amp; Device Information:</b> A machine identifier and license key, used solely to validate that your software installation is authorized correctly.</li>
+      <li><b>Customer Contact Details:</b> Name, email address, and business name collected during order placement to deliver setup instructions and license keys.</li>
+      <li><b>Support Communications:</b> If you reach out via email or online support channels, we retain those communications to assist you with onboarding and troubleshooting.</li>
+    </ul>
+  </section>
+  <section>
+    <h2><span class="num">4</span>Third-Party Services &amp; Integrations</h2>
+    <ul>
+      <li><b>Payment Processing (Razorpay):</b> We process online payments securely through authorized third-party payment gateways such as Razorpay. Ominibase does not store, process, or have access to your complete credit/debit card numbers, UPI PINs, or net banking passwords. All transactions are encrypted and handled directly by the payment processor under standard PCI-DSS compliance.</li>
+      <li><b>Custom Forms &amp; Google Sheets Integration:</b> For clients utilizing our Custom Forms, submitted respondent data is directly routed into the client's designated Google Sheet via automated scripts. Ominibase does not own, view, harvest, or sell the end-user responses captured through your private forms.</li>
+      <li><b>WhatsApp Messaging Features:</b> The Software provides direct pre-filled message links that open WhatsApp on your device. We do not intercept private messages, read your personal chat history, or trigger background messages without your manual click and consent.</li>
+      <li><b>Data Migration Assistance:</b> If you voluntarily share previous records (via Excel, CSV, or JSON files) with our team for initial setup or migration, that data is used strictly for configuring your system and is not stored or repurposed post-delivery.</li>
+    </ul>
+  </section>
+  <section>
+    <h2><span class="num">5</span>Data Security</h2>
+    <p>We implement reasonable technical safeguards to protect the limited administrative and license information we handle. Because operational business data is primarily stored locally on your device or in your personal cloud accounts, you remain responsible for maintaining the security of your hardware and credentials.</p>
+  </section>
+  <section>
+    <h2><span class="num">6</span>Children's Privacy</h2>
+    <p>The Software and Services are intended for studio owners, coaches, administrators, and staff. The platform is not directed at children, though it may record student information as part of an organization's admissions and attendance records managed independently by that business.</p>
+  </section>
+  <section>
+    <h2><span class="num">7</span>Changes to This Policy</h2>
+    <p>We may update this Privacy Policy periodically to reflect new software features or service terms. The "Last updated" date at the top of this page reflects the most recent revision.</p>
+  </section>
+  <section>
+    <h2><span class="num">8</span>Contact Us</h2>
+    <p>If you have any questions regarding this Privacy Policy or how your information is handled, please contact us at:</p>
+    <div class="contact-card">
+      <div class="contact-row"><b>Company</b> Ominibase</div>
+      <div class="contact-row"><b>Email</b> <a href="mailto:ominibase.online@gmail.com">ominibase.online@gmail.com</a></div>
+      <div class="contact-row"><b>Website</b> <a href="https://ominibase.online" target="_blank" rel="noopener">https://ominibase.online</a></div>
+    </div>
+  </section>
+</div>
