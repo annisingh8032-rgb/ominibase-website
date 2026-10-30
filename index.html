@@ -344,11 +344,12 @@ var WT=[winT('#c4694f','#86b8dc','#f2e4ca'),winT('#b55a45','#92c2e4','#ecdabd'),
 var asT=cv(256,256,function(g){g.fillStyle='#43474c';g.fillRect(0,0,256,256);for(var i=0;i<1800;i++){var v=60+Math.random()*50|0;g.fillStyle='rgb('+v+','+v+','+(v+4)+')';g.fillRect(Math.random()*256,Math.random()*256,2,2)}});
 asT.wrapS=asT.wrapT=THREE.RepeatWrapping;asT.repeat.set(75,3);
 function rcv(m){m.receiveShadow=true;return m}
-fp(500,500,0,0,M(0xd8c9b4),-.12);
-fp(500,10,0,10,new THREE.MeshLambertMaterial({map:asT}),-.05);
-fp(500,5,0,2.5,new THREE.MeshLambertMaterial({map:tile('#e8dcc6','#cdbda3',250,3)}),0);
-fp(500,6,0,18,new THREE.MeshLambertMaterial({map:tile('#e8dcc6','#cdbda3',250,3)}),0);
-fp(22,5,0,2.5,M(0xe9dfca),.005);
+var wxWet=[];function wxG(m,k){wxWet.push({m:m,c:m.color.clone(),k:k});return m}
+fp(500,500,0,0,wxG(M(0xd8c9b4),.6),-.12);
+fp(500,10,0,10,wxG(new THREE.MeshLambertMaterial({map:asT}),1),-.05);
+fp(500,5,0,2.5,wxG(new THREE.MeshLambertMaterial({map:tile('#e8dcc6','#cdbda3',250,3)}),1),0);
+fp(500,6,0,18,wxG(new THREE.MeshLambertMaterial({map:tile('#e8dcc6','#cdbda3',250,3)}),1),0);
+fp(22,5,0,2.5,wxG(M(0xe9dfca),1),.005);
 B(500,.12,.22,M(0xe9ece9),0,-.02,5.1);B(500,.12,.22,M(0xe9ece9),0,-.02,14.9);
 var wm=bas(0xf3f4f1);
 fp(500,.14,0,5.7,wm,-.04);fp(500,.14,0,14.3,wm,-.04);
@@ -833,7 +834,7 @@ function applyTime(h){
   var A=KEYS[i],B=KEYS[i+1],t=cl((h-A.h)/(B.h-A.h));t=t*t*(3-2*t);
   function N(a,b){return a+(b-a)*t}
   function CL(a,b){return TC.copy(a).lerp(b,t)}
-  var ST=A.sk.map(function(c,k){return c.clone().lerp(B.sk[k],t)}),fog=CL(A.fog,B.fog).clone(),nf=N(A.nf,B.nf),gl=N(A.gl,B.gl),sa=N(A.sa,B.sa);NFv=nf;wxSky(ST,fog);
+  var ST=A.sk.map(function(c,k){return c.clone().lerp(B.sk[k],t)}),fog=CL(A.fog,B.fog).clone(),nf=N(A.nf,B.nf),gl=N(A.gl,B.gl),sa=N(A.sa,B.sa);NFv=nf;wxSky(ST,fog);WX.pc.copy(fog);
   var sunUp=h>=5.5&&h<=18.5,ang=sunUp?(h-5.5)/13*Math.PI:((h<5.5?h+24:h)-18.5)/11*Math.PI,sn=Math.sin(ang);
   SDV.set(Math.cos(ang)*.9,Math.max(sn*.85,.1),.45).normalize();
   LDV.set(SDV.x,Math.max(SDV.y,.38),SDV.z).normalize();
@@ -856,7 +857,7 @@ function applyTime(h){
   var sl=$('sunl');sl.style.opacity=sunUp?gl*(1-WX.ov):0;sl.style.background='radial-gradient(70% 50% at '+(50+SDV.x*45)+'% -5%,rgba(255,206,140,.30),rgba(255,206,140,0) 70%)'}
 /* ====== LIVE WEATHER: real location + Open-Meteo (free, no key). Rain / snow / fog / storm / wind / clouds follow the real sky ====== */
 var GEO=null,GY=new THREE.Color(),wxQ=(function(){var o={};location.search.replace(/[?&](\w+)=([^&]*)/g,function(m,k,v){o[k]=decodeURIComponent(v)});return o})();
-var WX={rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0,ov:0,hb:.66,fl:0,kmh:0,last:null,T:{rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0}},wxN=0,wxDirty=0,wxAt=0;
+var WX={rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0,ov:0,hb:.66,fl:0,kmh:0,last:null,wet:0,pc:new THREE.Color(.8,.85,.9),T:{wet:0,rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0}},wxN=0,wxDirty=0,wxAt=0;
 var wxRN={51:.18,53:.3,55:.42,56:.3,57:.45,61:.45,63:.7,65:1,66:.5,67:.85,80:.5,81:.8,82:1,95:.85,96:1,99:1},wxSN={71:.35,73:.65,75:1,77:.4,85:.55,86:1};
 var wxNM={0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',56:'Freezing drizzle',57:'Freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Rain showers',81:'Rain showers',82:'Heavy showers',85:'Snow showers',86:'Snow showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
 function wxL(){return 1-WX.ov*.55}
@@ -896,6 +897,36 @@ function wxLeaf(dt,t){var a=cl((WX.w*55-18)/25);wxLP.visible=a>.02;if(!wxLP.visi
     if(wxInB(x,y,z)||y<.2||y>7){y=.6+Math.random()*5;x=cx+(Math.random()*2-1)*wxBX;z=cz+(Math.random()*2-1)*wxBX}
     wxLs[j]=x;wxLs[j+1]=y;wxLs[j+2]=z;p[j]=x;p[j+1]=y;p[j+2]=z}
   wxLG.attributes.position.needsUpdate=true}
+/* ====== WET GROUND: darker surfaces, glossy sheen, puddles + ripples, lamp reflections on the road ====== */
+var wxShM=[],wxPD=[],wxRp=[],wxRf=[],wxPG=new THREE.Group(),wxRG2=new THREE.Group(),wxFG=new THREE.Group(),wxWH=new THREE.Color(1,1,1),wxRC=new THREE.Color();
+scene.add(wxPG);scene.add(wxRG2);scene.add(wxFG);
+var wxSM2=new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}),
+    wxPM=new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}),
+    wxFM=new THREE.MeshBasicMaterial({map:LG,color:0xffd890,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});
+(function(){
+  var s=7;function R(){s=s*16807%2147483647;return s/2147483647}
+  var sT=cv(256,32,function(g){for(var i=0;i<60;i++){g.fillStyle='rgba(255,255,255,'+(.12+R()*.4)+')';g.fillRect(R()*256,R()*32,20+R()*90,1+R()*3)}});
+  sT.wrapS=sT.wrapT=THREE.RepeatWrapping;sT.repeat.set(70,1);wxSM2.map=sT;
+  wxPM.map=cv(128,64,function(g){for(var i=0;i<5;i++){var cx=34+i*15+(i%2)*3,cy=32+(i%3-1)*5,rx=26+(i%2)*8,ry=15+(i%3)*3;g.save();g.translate(cx,cy);g.scale(rx/ry,1);
+    var gr=g.createRadialGradient(0,0,ry*.35,0,0,ry);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.7,'rgba(255,255,255,.9)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.beginPath();g.arc(0,0,ry,0,7);g.fill();g.restore()}});
+  var rT=cv(64,64,function(g){g.strokeStyle='rgba(255,255,255,1)';g.lineWidth=2.5;g.beginPath();g.arc(32,32,24,0,7);g.stroke();g.lineWidth=1.2;g.beginPath();g.arc(32,32,15,0,7);g.stroke()});
+  [[500,10,0,10,-.03],[500,5,0,2.5,.008],[500,6,0,18,.008]].forEach(function(a){var m=new THREE.Mesh(new THREE.PlaneGeometry(a[0],a[1]),wxSM2);m.rotation.x=-Math.PI/2;m.position.set(a[2],a[4],a[3]);m.renderOrder=1;m.visible=false;scene.add(m);wxShM.push(m)});
+  function pud(x,z,y,w){var d=w*(.3+R()*.15),m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),wxPM);m.rotation.order='YXZ';m.rotation.x=-Math.PI/2;m.rotation.y=(R()-.5)*.5;m.position.set(x,y,z);m.renderOrder=2;wxPG.add(m);wxPD.push({x:x,y:y,z:z,w:w,d:d})}
+  for(var i=0;i<16;i++)pud((R()*2-1)*13,.9+R()*3.7,.014,1.6+R()*2.4);
+  for(i=0;i<24;i++)pud((R()*2-1)*45,6.3+R()*7.4,-.022,1.8+R()*3.2);
+  for(i=0;i<10;i++)pud((R()*2-1)*40,15.6+R()*4.8,.014,1.6+R()*2.6);
+  for(i=0;i<30;i++){var p=wxPD[Math.floor(R()*wxPD.length)],m2=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:rT,transparent:true,opacity:0,depthWrite:false}));
+    m2.rotation.x=-Math.PI/2;m2.position.set(p.x+(R()-.5)*p.w*.5,p.y+.004,p.z+(R()-.5)*p.d*.4);m2.renderOrder=3;wxRG2.add(m2);wxRp.push({m:m2,per:.9+R()*.9,off:R()})}
+  var LP=[];for(var lx=-63;lx<=63;lx+=18)LP.push([lx,6.05]);for(var l2=-68;l2<=68;l2+=18)LP.push([l2,13.95]);
+  LP.forEach(function(a){var m=new THREE.Mesh(new THREE.PlaneGeometry(2.4,8),wxFM);m.rotation.x=-Math.PI/2;m.position.set(a[0],-.018,a[1]);m.renderOrder=3;wxFG.add(m)});
+  wxPG.visible=wxRG2.visible=wxFG.visible=false})();
+function wxWetFrame(t){var w=WX.wet,pf=cl((w-.3)/.5),day=1-NFv;
+  wxWet.forEach(function(o){o.m.color.copy(o.c).multiplyScalar(1-.45*w*o.k)});
+  var on=w>.02;wxShM.forEach(function(m){m.visible=on});wxSM2.opacity=w*.2*(.35+.65*day);wxSM2.color.copy(WX.pc).lerp(wxWH,.2);
+  wxPG.visible=pf>.01;wxPM.opacity=.62*pf;wxPM.color.copy(WX.pc).lerp(wxWH,.3);
+  var ra=WX.rain>.05?cl(WX.rain*1.6)*pf:0;wxRG2.visible=ra>.01;
+  if(wxRG2.visible){wxRC.copy(WX.pc).lerp(wxWH,.5);wxRp.forEach(function(r){var p=((t/r.per)+r.off)%1,sc=.15+p*.9;r.m.scale.set(sc,sc,1);r.m.material.color.copy(wxRC);r.m.material.opacity=(1-p)*(1-p)*.8*ra})}
+  var fo=w*NFv*.55*(1-WX.fog*.5);wxFM.opacity=fo;wxFG.visible=fo>.01}
 function wxFrame(dt,t){
   var T=WX.T,k=Math.min(1,dt*.6),ch=0,n;
   for(n in T){var d=T[n]-WX[n];WX[n]+=d*k;ch+=Math.abs(d)}
@@ -906,25 +937,26 @@ function wxFrame(dt,t){
   var g=1+.45*Math.sin(t*.7)*Math.sin(t*.23+1),am=(.015+WX.w*.2)*g,ln=WX.w*.3*g;
   wxTR.forEach(function(o){var s1=Math.sin(t*(1.6+WX.w*2.2)+o.ph),s2=Math.sin(t*(2.3+WX.w*2.6)+o.ph*1.7);
     o.a.position.x=o.ax+WX.dx*ln*.5+s1*am;o.a.position.z=o.az+WX.dz*ln*.5+s2*am*.6;o.b.position.x=o.bx+WX.dx*ln+s1*am*1.5;o.b.position.z=o.bz+WX.dz*ln+s2*am});
-  wxRain(dt);wxSnow(dt,t);wxLeaf(dt,t);
+  wxRain(dt);wxSnow(dt,t);wxLeaf(dt,t);wxWetFrame(t);
   if(WX.st>.5&&t>wxAt){if(!wxAt)wxAt=t+3;else{WX.fl=1;WX.dbl=Math.random()<.5?t+.18:0;wxAt=t+5+Math.random()*10}}
   if(WX.dbl&&t>WX.dbl){WX.fl=.85;WX.dbl=0}
   var f=WX.fl;if(f>0||WX.fo){WX.fl=Math.max(0,f-dt*3.2);hl.intensity=WX.hb+WX.fl*2.5;var fe=$('wxf');if(fe)fe.style.opacity=WX.fl*.45;WX.fo=WX.fl>0}
 }
-function wxSet(code,cloud,kmh,deg){
+function wxSet(code,cloud,kmh,deg,wet){
   var T=WX.T,c=cl(cloud/100);
   c=code===0?Math.min(c,.12):code===1?Math.min(c,.35):code===2?Math.min(.7,Math.max(c,.35)):Math.max(c,.85);
-  T.rain=wxRN[code]||0;T.snow=wxSN[code]||0;T.fog=(code===45||code===48)?1:0;T.st=code>=95?1:0;
+  T.rain=wxRN[code]||0;T.snow=wxSN[code]||0;T.fog=(code===45||code===48)?1:0;T.st=code>=95?1:0;T.wet=Math.max(wet||0,T.rain?Math.max(.85,T.rain):0,T.snow?.2:0);
   if(T.rain||T.snow)c=Math.max(c,.9);
   T.cl=c;T.w=Math.min(1,kmh/55);var r=deg*Math.PI/180;T.dx=-Math.sin(r);T.dz=Math.cos(r);WX.kmh=kmh}
 function wxChip(){var e=$('wx'),L=WX.last;if(!e||!L)return;
   var ic=L.code>=95?'⛈️':(wxSN[L.code]?'❄️':(L.code>=51&&wxRN[L.code]?'🌧️':(L.code===45||L.code===48?'🌫️':(L.code===3?'☁️':(L.code===2?'⛅':(L.day?'☀️':'🌙'))))));
-  e.textContent=ic+'  '+Math.round(L.t)+'°C · '+(GEO&&GEO.city?GEO.city+' · ':'')+(wxNM[L.code]||'Weather')+(L.ws>=12?' · 💨 '+Math.round(L.ws)+' km/h':'');e.classList.add('on')}
+  e.textContent=ic+'  '+Math.round(L.t)+'°C · '+(GEO&&GEO.city?GEO.city+' · ':'')+(wxNM[L.code]||'Weather')+(L.ws>=12?' · 💨 '+Math.round(L.ws)+' km/h':'')+(L.wet?' · 💧 Wet roads':'');e.classList.add('on')}
 function wxLoad(){if(!GEO)return;
-  fetch('https://api.open-meteo.com/v1/forecast?latitude='+GEO.lat.toFixed(3)+'&longitude='+GEO.lon.toFixed(3)+'&current=temperature_2m,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day&wind_speed_unit=kmh&timezone=auto')
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+GEO.lat.toFixed(3)+'&longitude='+GEO.lon.toFixed(3)+'&current=temperature_2m,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,precipitation&hourly=precipitation&past_hours=6&forecast_hours=1&wind_speed_unit=kmh&timezone=auto')
   .then(function(r){return r.json()}).then(function(j){var c=j&&j.current;if(!c)return;
-    wxSet(c.weather_code,c.cloud_cover,Math.max(c.wind_speed_10m||0,(c.wind_gusts_10m||0)*.6),c.wind_direction_10m||0);
-    WX.last={code:c.weather_code,t:c.temperature_2m,ws:c.wind_speed_10m||0,day:c.is_day};WX.at=Date.now();wxChip()}).catch(function(){})}
+    var h=(j.hourly&&j.hourly.precipitation)||[],sm=0,L=h.length,i,wh;for(i=0;i<L;i++)sm+=(h[i]||0)*(L-1-i<2?1:L-1-i<4?.6:.3);wh=(c.precipitation||0)>.05?1:cl(sm/.8);
+    wxSet(c.weather_code,c.cloud_cover,Math.max(c.wind_speed_10m||0,(c.wind_gusts_10m||0)*.6),c.wind_direction_10m||0,wh);
+    WX.last={code:c.weather_code,t:c.temperature_2m,ws:c.wind_speed_10m||0,day:c.is_day,wet:wh>.5&&!wxRN[c.weather_code]};WX.at=Date.now();wxChip()}).catch(function(){})}
 function wxGeo(lat,lon,city,src){
   if(GEO&&GEO.src==='gps'&&src!=='gps')return;
   GEO={lat:lat,lon:lon,city:city||(GEO&&Math.abs(GEO.lat-lat)<.1?GEO.city:''),src:src};
@@ -934,8 +966,8 @@ function wxGeo(lat,lon,city,src){
 function wxIP(){fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){var a=parseFloat(j.latitude),b=parseFloat(j.longitude);if(isFinite(a)&&isFinite(b))wxGeo(a,b,j.city||'','ip')}).catch(function(){if(!GEO)wxGeo(25.6,85.1,'Patna','ip')})}
 (function(){
   var e=$('wx');if(e)e.addEventListener('click',wxLoad);
-  if(wxQ.wx){var P={clear:[0,5],cloudy:[3,100],rain:[63,100],heavy:[65,100],drizzle:[53,90],storm:[95,100],snow:[73,100],fog:[45,100],wind:[1,20]},p=P[wxQ.wx]||P.clear,ws=wxQ.wind?parseFloat(wxQ.wind):(wxQ.wx==='wind'?45:wxQ.wx==='storm'?35:8);
-    GEO={lat:25.6,lon:85.1,city:'Preview',src:'ip'};wxSet(p[0],p[1],ws,270);WX.last={code:p[0],t:27,ws:ws,day:1};
+  if(wxQ.wx){var P={clear:[0,5],cloudy:[3,100],rain:[63,100],heavy:[65,100],drizzle:[53,90],storm:[95,100],snow:[73,100],fog:[45,100],wind:[1,20],wet:[2,55,1]},p=P[wxQ.wx]||P.clear,ws=wxQ.wind?parseFloat(wxQ.wind):(wxQ.wx==='wind'?45:wxQ.wx==='storm'?35:8);
+    GEO={lat:25.6,lon:85.1,city:'Preview',src:'ip'};wxSet(p[0],p[1],ws,270,p[2]);WX.last={code:p[0],t:27,ws:ws,day:1,wet:!!p[2]};
     for(var n in WX.T)WX[n]=WX.T[n];WX.ov=Math.min(1,Math.max(WX.cl*.7,WX.rain*.85,WX.snow*.8,WX.fog*.9));wxChip();return}
   try{var c=JSON.parse(localStorage.getItem('omni_geo')||'null');if(c&&isFinite(c.lat)&&isFinite(c.lon)){GEO=c;wxLoad()}}catch(x){}
   if(!GEO)wxIP();
