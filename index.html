@@ -999,37 +999,57 @@ function wxFrame(dt,t){
   if(WX.dbl&&t>WX.dbl){WX.fl=.85;WX.dbl=0}
   var f=WX.fl;if(f>0||WX.fo){WX.fl=Math.max(0,f-dt*3.2);hl.intensity=WX.hb+WX.fl*2.5;var fe=$('wxf');if(fe)fe.style.opacity=WX.fl*.45;WX.fo=WX.fl>0}
 }
-function wxSet(code,cloud,kmh,deg,wet){
+function wxSet(code,cloud,kmh,deg,wet,ri,si){
   var T=WX.T,c=cl(cloud/100);
   c=code===0?Math.min(c,.12):code===1?Math.min(c,.35):code===2?Math.min(.7,Math.max(c,.35)):Math.max(c,.85);
-  T.rain=wxRN[code]||0;T.snow=wxSN[code]||0;T.fog=(code===45||code===48)?1:0;T.st=code>=95?1:0;T.wet=Math.max(wet||0,T.rain?Math.max(.85,T.rain):0,T.snow?.2:0);
+  T.rain=ri!=null?ri:(wxRN[code]||0);T.snow=si!=null?si:(wxSN[code]||0);T.fog=(code===45||code===48)?1:0;T.st=code>=95?1:0;T.wet=Math.max(wet||0,T.rain?Math.max(.85,T.rain):0,T.snow?.2:0);
   if(T.rain||T.snow)c=Math.max(c,.9);
   T.cl=c;T.w=Math.min(1,kmh/55);var r=deg*Math.PI/180;T.dx=-Math.sin(r);T.dz=Math.cos(r);WX.kmh=kmh}
 function wxChip(){var e=$('wx'),L=WX.last;if(!e||!L)return;
   var ic=L.code>=95?'⛈️':(wxSN[L.code]?'❄️':(L.code>=51&&wxRN[L.code]?'🌧️':(L.code===45||L.code===48?'🌫️':(L.code===3?'☁️':(L.code===2?'⛅':(L.day?'☀️':'🌙'))))));
   e.textContent=ic+'  '+Math.round(L.t)+'°C · '+(GEO&&GEO.city?GEO.city+' · ':'')+(wxNM[L.code]||'Weather')+(L.ws>=12?' · 💨 '+Math.round(L.ws)+' km/h':'')+(L.wet?' · 💧 Wet roads':'');e.classList.add('on')}
-function wxLoad(){if(!GEO)return;
-  fetch('https://api.open-meteo.com/v1/forecast?latitude='+GEO.lat.toFixed(3)+'&longitude='+GEO.lon.toFixed(3)+'&current=temperature_2m,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,precipitation&hourly=precipitation&past_hours=6&forecast_hours=1&wind_speed_unit=kmh&timezone=auto')
-  .then(function(r){return r.json()}).then(function(j){var c=j&&j.current;if(!c)return;
-    var h=(j.hourly&&j.hourly.precipitation)||[],sm=0,L=h.length,i,wh;for(i=0;i<L;i++)sm+=(h[i]||0)*(L-1-i<2?1:L-1-i<4?.6:.3);wh=(c.precipitation||0)>.05?1:cl(sm/.8);
-    wxSet(c.weather_code,c.cloud_cover,Math.max(c.wind_speed_10m||0,(c.wind_gusts_10m||0)*.6),c.wind_direction_10m||0,wh);
-    WX.last={code:c.weather_code,t:c.temperature_2m,ws:c.wind_speed_10m||0,day:c.is_day,wet:wh>.5&&!wxRN[c.weather_code]};WX.at=Date.now();wxChip()}).catch(function(){})}
+function wxA(o,pre){var a=[],k;for(k in o)if(k.indexOf(pre)===0&&typeof o[k]==='number')a.push(o[k]);return a}
+function wxM(a){if(!a.length)return 0;var s=0;a.forEach(function(v){s+=v});return s/a.length}
+function wxLoad(retry){if(!GEO)return;
+  var u='https://api.open-meteo.com/v1/forecast?latitude='+GEO.lat.toFixed(3)+'&longitude='+GEO.lon.toFixed(3)+'&current=temperature_2m,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,precipitation&hourly=precipitation&past_hours=6&forecast_hours=1&wind_speed_unit=kmh&timezone=auto';
+  fetch(retry?u:u+'&models=ecmwf_ifs025,gfs_seamless,icon_seamless').then(function(r){return r.json()}).then(function(j){
+    var c=j&&j.current,P=c?wxA(c,'precipitation'):[];if(!P.length){if(!retry)wxLoad(1);return}
+    var Cd=wxA(c,'weather_code'),n=P.length,vt=P.filter(function(v){return v>.05}),rainy=vt.length>0&&vt.length*2>=n,pm=wxM(vt),
+        tm=wxM(wxA(c,'temperature_2m')),cc=wxM(wxA(c,'cloud_cover')),ws=wxM(wxA(c,'wind_speed_10m')),gs=wxM(wxA(c,'wind_gusts_10m')),wd=(wxA(c,'wind_direction_10m')[0])||0,day=(wxA(c,'is_day')[0])!==0,
+        thun=rainy&&Cd.some(function(k){return k>=95}),
+        snow=rainy&&(tm<=1||Cd.filter(function(k){return wxSN[k]}).length*2>=Cd.length),
+        fog=Cd.length&&Cd.filter(function(k){return k===45||k===48}).length*2>=Cd.length,
+        ri=rainy&&!snow?(pm<.2?.25:pm<.8?.45:pm<2?.7:1):0,si=snow?(pm<.2?.35:pm<.8?.65:1):0;
+    if(thun)ri=Math.max(ri,.85);
+    var code=thun?95:snow?73:fog?45:rainy?(ri>.6?65:ri>.3?63:53):(cc>85?3:cc>45?2:cc>15?1:0);
+    /* wet ground: average of every model's last-6h rain, weighted to recent hours */
+    var H=j.hourly||{},hk=Object.keys(H).filter(function(k){return k.indexOf('precipitation')===0&&Array.isArray(H[k])}),L=hk.length?H[hk[0]].length:0,sm=0,i;
+    for(i=0;i<L;i++){var vv=[];hk.forEach(function(k){if(typeof H[k][i]==='number')vv.push(H[k][i])});sm+=wxM(vv)*(L-1-i<2?1:L-1-i<4?.6:.3)}
+    var wh=rainy?1:cl(sm/.8);
+    wxSet(code,cc,Math.max(ws,gs*.6),wd,wh,ri,si);
+    WX.last={code:code,t:tm,ws:ws,day:day,wet:wh>.5&&!rainy};WX.at=Date.now();wxChip();
+    try{console.info('[weather]',(GEO.city||'')+' ('+GEO.lat.toFixed(2)+','+GEO.lon.toFixed(2)+', '+GEO.src+')',rainy?'RAIN '+pm.toFixed(2)+'mm':'no rain','models:',n,'votes:',vt.length)}catch(e){}
+  }).catch(function(){if(!retry)wxLoad(1)})}
 function wxGeo(lat,lon,city,src){
   if(GEO&&GEO.src==='gps'&&src!=='gps')return;
   GEO={lat:lat,lon:lon,city:city||(GEO&&Math.abs(GEO.lat-lat)<.1?GEO.city:''),src:src};
   try{localStorage.setItem('omni_geo',JSON.stringify(GEO))}catch(e){}
   tick();wxLoad();
   if(!city)fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+lat+'&longitude='+lon+'&localityLanguage=en').then(function(r){return r.json()}).then(function(j){var n=j&&(j.city||j.locality||j.principalSubdivision);if(n&&GEO){GEO.city=n;try{localStorage.setItem('omni_geo',JSON.stringify(GEO))}catch(e){}wxChip()}}).catch(function(){})}
-function wxIP(){fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){var a=parseFloat(j.latitude),b=parseFloat(j.longitude);if(isFinite(a)&&isFinite(b))wxGeo(a,b,j.city||'','ip')}).catch(function(){if(!GEO)wxGeo(25.6,85.1,'Patna','ip')})}
+function wxIP(){
+  function ok(a,b,c){a=parseFloat(a);b=parseFloat(b);if(isFinite(a)&&isFinite(b)){wxGeo(a,b,c||'','ip');return true}return false}
+  fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){if(!ok(j.latitude,j.longitude,j.city))throw 0})
+  .catch(function(){fetch('https://ipwho.is/').then(function(r){return r.json()}).then(function(j){ok(j.latitude,j.longitude,j.city)}).catch(function(){})})}
 (function(){
   var e=$('wx');if(e)e.addEventListener('click',wxLoad);
   if(wxQ.wx){var P={clear:[0,5],cloudy:[3,100],rain:[63,100],heavy:[65,100],drizzle:[53,90],storm:[95,100],snow:[73,100],fog:[45,100],wind:[1,20],wet:[2,55,1]},p=P[wxQ.wx]||P.clear,ws=wxQ.wind?parseFloat(wxQ.wind):(wxQ.wx==='wind'?45:wxQ.wx==='storm'?35:8);
     GEO={lat:25.6,lon:85.1,city:'Preview',src:'ip'};wxSet(p[0],p[1],ws,270,p[2]);WX.last={code:p[0],t:27,ws:ws,day:1,wet:!!p[2]};
     for(var n in WX.T)WX[n]=WX.T[n];WX.ov=Math.min(1,Math.max(WX.cl*.7,WX.rain*.85,WX.snow*.8,WX.fog*.9));wxChip();return}
   try{var c=JSON.parse(localStorage.getItem('omni_geo')||'null');if(c&&isFinite(c.lat)&&isFinite(c.lon)){GEO=c;wxLoad()}}catch(x){}
-  if(!GEO)wxIP();
-  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(function(p){wxGeo(p.coords.latitude,p.coords.longitude,'','gps')},function(){if(!GEO)wxIP()},{timeout:8000,maximumAge:6e5});
-  setInterval(wxLoad,6e5);document.addEventListener('visibilitychange',function(){if(!document.hidden&&WX.at&&Date.now()-WX.at>3e5)wxLoad()})
+  function noGps(){if(GEO&&GEO.src==='gps')GEO.src='ip';wxIP()}
+  if(!GEO||GEO.src!=='gps')wxIP();
+  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(function(p){wxGeo(p.coords.latitude,p.coords.longitude,'','gps')},noGps,{timeout:8000,maximumAge:6e5});else noGps();
+  setInterval(wxLoad,3e5);document.addEventListener('visibilitychange',function(){if(!document.hidden&&WX.at&&Date.now()-WX.at>3e5)wxLoad()})
 })();
 /* real sunrise/sunset for today (NOAA formula; lat 25.6N default for Bihar, longitude from the phone's timezone) */
 function solarDay(d){var tz=-d.getTimezoneOffset()/60,lon=GEO?GEO.lon:(tz===5.5?85.1:tz*15),lat=(GEO?GEO.lat:25.6)*Math.PI/180,n=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5),
