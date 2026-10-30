@@ -793,8 +793,8 @@ function loop(ms){
   cars.forEach(function(c){
     var ex=c.d*c.x,vt=c.sp;
     cars.forEach(function(o){if(o!==c&&o.d===c.d){var gap=(o.x-c.x)*c.d-(c.len+o.len)/2;if(gap>0&&gap<14)vt=Math.min(vt,c.sp*cl((gap-2)/8))}});
-    c.v+=(vt-c.v)*Math.min(1,dt*2);c.x+=c.d*c.v*dt;if(c.x*c.d>80)c.x=-c.d*80;c.g.position.x=c.x});
-  peds.forEach(function(p){var px=p.P.g.position.x;if(Math.abs(px)>62&&px*p.d>0)p.d=-p.d;pedMove(p,dt);walk2(p.P,dt)});
+    if(wxXing){var ah=-c.x*c.d;if(ah>5.5&&ah<12)vt=Math.min(vt,c.sp*cl((ah-5.5)/5))}c.v+=(vt-c.v)*Math.min(1,dt*2);c.x+=c.d*c.v*dt;if(c.x*c.d>80)c.x=-c.d*80;c.g.position.x=c.x});
+  peds.forEach(function(p){var px=p.P.g.position.x;if(Math.abs(px)>62&&px*p.d>0)p.d=-p.d;if(!wxShelter(p,dt))pedMove(p,dt);walk2(p.P,dt);wxPedFx(p,dt,t)});
   walkers.forEach(function(w){var g=w.P.g;
     if(w.wait>0)w.wait-=dt;
     else{var q=w.pts[w.i],dx=q[0]-g.position.x,dz=q[1]-g.position.z,d=Math.hypot(dx,dz);
@@ -854,7 +854,7 @@ function applyTime(h){
   var sl=$('sunl');sl.style.opacity=sunUp?gl*(1-WX.ov):0;sl.style.background='radial-gradient(70% 50% at '+(50+SDV.x*45)+'% -5%,rgba(255,206,140,.30),rgba(255,206,140,0) 70%)'}
 /* ====== LIVE WEATHER: real location + Open-Meteo (free, no key). Rain / snow / fog / storm / wind / clouds follow the real sky ====== */
 var GEO=null,GY=new THREE.Color(),wxQ=(function(){var o={};location.search.replace(/[?&](\w+)=([^&]*)/g,function(m,k,v){o[k]=decodeURIComponent(v)});return o})();
-var WX={rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0,ov:0,hb:.66,fl:0,kmh:0,last:null,wet:0,pc:new THREE.Color(.8,.85,.9),T:{wet:0,rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0}},wxN=0,wxDirty=0,wxAt=0;
+var WX={gs:0,rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0,ov:0,hb:.66,fl:0,kmh:0,last:null,wet:0,pc:new THREE.Color(.8,.85,.9),T:{wet:0,rain:0,snow:0,fog:0,cl:.15,w:0,dx:1,dz:0,st:0}},wxN=0,wxDirty=0,wxAt=0;
 var wxRN={51:.18,53:.3,55:.42,56:.3,57:.45,61:.45,63:.7,65:1,66:.5,67:.85,80:.5,81:.8,82:1,95:.85,96:1,99:1},wxSN={71:.35,73:.65,75:1,77:.4,85:.55,86:1};
 var wxNM={0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',56:'Freezing drizzle',57:'Freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Rain showers',81:'Rain showers',82:'Heavy showers',85:'Snow showers',86:'Snow showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
 function wxL(){return 1-WX.ov*.55}
@@ -866,7 +866,7 @@ function wxCloud(m,i,cc,nf){var o=WX.ov,u=m.userData,l=.3*cc.r+.59*cc.g+.11*cc.b
 (function(){var s=11;function R(){s=s*16807%2147483647;return s/2147483647}
   for(var i=0;i<14;i++){var a=R()*6.283,d=110+R()*60,w=130+R()*110,m=spr(LG,w,w*.34,Math.cos(a)*d,34+R()*55,Math.sin(a)*d);m.userData.x=1;cloudS.push(m)}})();
 /* particles: rain streaks, snow flakes, wind-blown leaves (kept outside the building) */
-var wxBX=24,wxBH=32,wxPN=mob?1300:2400,wxSNn=mob?900:1700,wxLN=70;
+var wxBX=24,wxBH=32,wxPN=mob?1300:2400,wxSNn=mob?900:1700;
 function wxInB(x,y,z){return(y<12.2&&Math.abs(x)<12.6&&z<.5&&z>-26.6)||(y<3.6&&Math.abs(x)<2.9&&z>.3&&z<2.6)}
 function wxWq(v,c){var d=v-c,L=wxBX*2;d=((d+wxBX)%L+L)%L-wxBX;return c+d}
 function wxSeed(n,H){var a=new Float32Array(n*3);for(var i=0;i<n;i++){a[i*3]=(Math.random()*2-1)*wxBX;a[i*3+1]=Math.random()*H;a[i*3+2]=(Math.random()*2-1)*wxBX}return a}
@@ -874,8 +874,7 @@ var wxRs=wxSeed(wxPN,wxBH),wxRG=new THREE.BufferGeometry();wxRG.setAttribute('po
 var wxRM=new THREE.LineBasicMaterial({color:0xbcd2e8,transparent:true,opacity:.5,depthWrite:false}),wxRL=new THREE.LineSegments(wxRG,wxRM);wxRL.frustumCulled=false;wxRL.visible=false;scene.add(wxRL);
 var wxSs=wxSeed(wxSNn,wxBH),wxSG=new THREE.BufferGeometry();wxSG.setAttribute('position',new THREE.BufferAttribute(new Float32Array(wxSNn*3),3));
 var wxSM=new THREE.PointsMaterial({color:0xffffff,size:.17,transparent:true,opacity:.9,depthWrite:false}),wxSP=new THREE.Points(wxSG,wxSM);wxSP.frustumCulled=false;wxSP.visible=false;scene.add(wxSP);
-var wxLs=wxSeed(wxLN,6),wxLG=new THREE.BufferGeometry();wxLG.setAttribute('position',new THREE.BufferAttribute(new Float32Array(wxLN*3),3));
-var wxLM=new THREE.PointsMaterial({color:0xb08a4a,size:.22,transparent:true,opacity:0,depthWrite:false}),wxLP=new THREE.Points(wxLG,wxLM);wxLP.frustumCulled=false;wxLP.visible=false;scene.add(wxLP);
+
 function wxRain(dt){var R=WX.rain;wxRL.visible=R>.01;if(!wxRL.visible)return;
   var n=Math.max(1,Math.floor(wxPN*Math.min(1,R+.05))),p=wxRG.attributes.position.array,hv=WX.w*16,vx=WX.dx*hv,vz=WX.dz*hv,vy=-(20+R*8),cx=cam.position.x,cz=cam.position.z;
   for(var i=0;i<n;i++){var j=i*3,x=wxWq(wxRs[j]+vx*dt,cx),y=wxRs[j+1]+vy*dt,z=wxWq(wxRs[j+2]+vz*dt,cz);
@@ -888,12 +887,6 @@ function wxSnow(dt,t){var S=WX.snow;wxSP.visible=S>.01;if(!wxSP.visible)return;
     if(y<0||wxInB(x,y,z)){y=wxBH-Math.random()*4;x=cx+(Math.random()*2-1)*wxBX;z=cz+(Math.random()*2-1)*wxBX}
     wxSs[j]=x;wxSs[j+1]=y;wxSs[j+2]=z;p[j]=x;p[j+1]=y;p[j+2]=z}
   wxSG.setDrawRange(0,n);wxSG.attributes.position.needsUpdate=true;wxSM.color.setRGB(1,1,1).multiplyScalar(.55+.45*(1-NFv))}
-function wxLeaf(dt,t){var a=cl((WX.w*55-18)/25);wxLP.visible=a>.02;if(!wxLP.visible)return;wxLM.opacity=a*.85;
-  var p=wxLG.attributes.position.array,sp=6+WX.w*20,cx=cam.position.x,cz=cam.position.z;
-  for(var i=0;i<wxLN;i++){var j=i*3,x=wxWq(wxLs[j]+(WX.dx*sp+Math.sin(t*2+i)*1.5)*dt,cx),y=wxLs[j+1]+Math.sin(t*3+i*1.3)*.9*dt,z=wxWq(wxLs[j+2]+(WX.dz*sp+Math.cos(t*2.2+i)*1.5)*dt,cz);
-    if(wxInB(x,y,z)||y<.2||y>7){y=.6+Math.random()*5;x=cx+(Math.random()*2-1)*wxBX;z=cz+(Math.random()*2-1)*wxBX}
-    wxLs[j]=x;wxLs[j+1]=y;wxLs[j+2]=z;p[j]=x;p[j+1]=y;p[j+2]=z}
-  wxLG.attributes.position.needsUpdate=true}
 /* ====== WET GROUND: darker surfaces, glossy sheen, puddles + ripples, lamp reflections on the road ====== */
 var wxShM=[],wxPD=[],wxRp=[],wxRf=[],wxPG=new THREE.Group(),wxRG2=new THREE.Group(),wxFG=new THREE.Group(),wxWH=new THREE.Color(1,1,1),wxRC=new THREE.Color();
 scene.add(wxPG);scene.add(wxRG2);scene.add(wxFG);
@@ -924,8 +917,73 @@ function wxWetFrame(t){var w=WX.wet,pf=cl((w-.3)/.5),day=1-NFv;
   var ra=WX.rain>.05?cl(WX.rain*1.6)*pf:0;wxRG2.visible=ra>.01;
   if(wxRG2.visible){wxRC.copy(WX.pc).lerp(wxWH,.5);wxRp.forEach(function(r){var p=((t/r.per)+r.off)%1,sc=.15+p*.9;r.m.scale.set(sc,sc,1);r.m.material.color.copy(wxRC);r.m.material.opacity=(1-p)*(1-p)*.8*ra})}
   var fo=w*NFv*.55*(1-WX.fog*.5);wxFM.opacity=fo;wxFG.visible=fo>.01}
+/* ====== WIND: real leaves + paper bits + dust; people shield their face; RAIN: public runs under the OMINIBASE canopy ====== */
+var wxLN=70,wxLf=[],wxDN=mob?90:170;
+var wxLT=cv(64,64,function(g){g.fillStyle='#fff';g.beginPath();g.moveTo(32,6);g.bezierCurveTo(54,16,54,42,32,58);g.bezierCurveTo(10,42,10,16,32,6);g.fill();g.strokeStyle='rgba(70,70,70,.6)';g.lineWidth=2;g.beginPath();g.moveTo(32,10);g.lineTo(32,57);g.stroke()});
+var wxPT2=cv(32,32,function(g){g.fillStyle='#fff';g.fillRect(5,7,22,18);g.strokeStyle='rgba(120,120,120,.5)';g.lineWidth=1;g.strokeRect(5,7,22,18)});
+var wxLC=[0x5f8f3a,0x7aa145,0xb8a23a,0xc9892f,0x8a5a2b,0x6b7f3a],wxLs=wxSeed(wxLN,6);
+for(var wi=0;wi<wxLN;wi++){var wpap=wi%6===0,wsm=new THREE.SpriteMaterial({map:wpap?wxPT2:wxLT,color:wpap?0xe9e6dc:wxLC[wi%wxLC.length],transparent:true,depthWrite:false}),wsp=new THREE.Sprite(wsm);
+  wsp.userData.s=wpap?.2+Math.random()*.08:.26+Math.random()*.12;wsp.userData.ph=Math.random()*6.28;wsp.scale.set(wsp.userData.s,wsp.userData.s,1);wsp.visible=false;wsp.frustumCulled=false;scene.add(wsp);wxLf.push(wsp)}
+var wxDs=wxSeed(wxDN,4),wxDG=new THREE.BufferGeometry();wxDG.setAttribute('position',new THREE.BufferAttribute(new Float32Array(wxDN*3),3));
+var wxDM=new THREE.PointsMaterial({map:LG,color:0xcdb990,size:.9,transparent:true,opacity:0,depthWrite:false}),wxDP=new THREE.Points(wxDG,wxDM);wxDP.frustumCulled=false;wxDP.visible=false;scene.add(wxDP);
+function wxLeaf(dt,t){
+  var a=cl(cl((WX.w*55-16)/24)*(1+.25*WX.gs)),n=Math.floor(wxLN*a),cx=cam.position.x,cz=cam.position.z,sp=5+WX.w*22*(1+.3*WX.gs);
+  for(var i=0;i<wxLN;i++){var m=wxLf[i];m.visible=i<n;if(i>=n)continue;
+    var j=i*3,u=m.userData,x=wxWq(wxLs[j]+(WX.dx*sp+Math.sin(t*2+i)*1.5)*dt,cx),y=wxLs[j+1]+(Math.sin(t*2.6+i*1.3)*1.1+.35)*dt,z=wxWq(wxLs[j+2]+(WX.dz*sp+Math.cos(t*2.2+i)*1.5)*dt,cz);
+    if(y<.15)y=.15;
+    if(wxInB(x,y,z)||y>7){y=.5+Math.random()*4;x=cx+(Math.random()*2-1)*wxBX;z=cz+(Math.random()*2-1)*wxBX}
+    wxLs[j]=x;wxLs[j+1]=y;wxLs[j+2]=z;m.position.set(x,y,z);m.material.rotation+=dt*(3+(i%5)*2)*(.5+WX.w);
+    m.scale.set(u.s*(.35+.65*Math.abs(Math.cos(t*3.2+u.ph))),u.s,1)}}
+function wxDust(dt,t){
+  var a=cl((WX.w*55-20)/25)*(1-WX.wet*.8);wxDP.visible=a>.02&&WX.rain<.5;if(!wxDP.visible)return;
+  wxDM.opacity=.24*a;wxDM.color.setRGB(.8,.73,.56).multiplyScalar(.4+.6*(1-NFv));
+  var p=wxDG.attributes.position.array,sp=7+WX.w*28,cx=cam.position.x,cz=cam.position.z;
+  for(var i=0;i<wxDN;i++){var j=i*3,x=wxWq(wxDs[j]+(WX.dx*sp+Math.sin(t*1.7+i)*2)*dt,cx),y=wxDs[j+1]+Math.sin(t*1.3+i*.9)*.5*dt,z=wxWq(wxDs[j+2]+(WX.dz*sp+Math.cos(t*1.9+i)*2)*dt,cz);
+    if(y<.2)y=.2;if(y>4.5)y=.3;if(wxInB(x,y,z)){x=cx+(Math.random()*2-1)*wxBX;z=cz+(Math.random()*2-1)*wxBX}
+    wxDs[j]=x;wxDs[j+1]=y;wxDs[j+2]=z;p[j]=x;p[j+1]=y;p[j+2]=z}
+  wxDG.attributes.position.needsUpdate=true}
+/* arm poses: face shield (wind) and hand-over-head (rain) */
+function wxPose(P,arm,idx,a,rx,ex,sz,ez){
+  if(!P.bz)P.bz=[P.armA.rotation.z,P.armB.rotation.z];var bz=P.bz[idx];
+  if(a<=.003){if(arm.fxo){arm.rotation.z=bz;arm.el.rotation.z=0;arm.fxo=0}return}
+  arm.fxo=1;arm.rotation.x+=(rx-arm.rotation.x)*a;arm.el.rotation.x+=(ex-arm.el.rotation.x)*a;arm.rotation.z=bz+(sz-bz)*a;arm.el.rotation.z=ez*a}
+function wxWindK(){return cl((WX.w*55*(1+.3*WX.gs)-20)/12)}
+function wxFx(P,idx,fa,ha,hy,hx){
+  var arm=idx?P.armB:P.armA,s=idx?-1:1,ax=Math.abs(arm.position.x);
+  if(ha>fa)wxPose(P,arm,idx,ha,-2.5,-.7,-s*.12,0);else wxPose(P,arm,idx,fa,-1.2,-2.2,-s*.9*ax,-s*1.5*ax);
+  P.head.rotation.x=hx*(1-fa)+.22*fa;P.head.rotation.y=hy*(1-fa)+s*.4*fa}
+/* shelter under the OMINIBASE canopy */
+var wxSpots=[],wxXing=0;
+[.8,1.35,1.9].forEach(function(z){[-2.3,-1.75,-1.2,1.2,1.75,2.3].forEach(function(x){if(Math.hypot(x+2.2,z-1.9)>.7)wxSpots.push({x:x,z:z,p:null})})});
+function wxShelter(p,dt){
+  var g=p.P.g,x=g.position.x,z=g.position.z,m=p.m||'walk',rn=WX.rain>.2;
+  if(m==='walk'){
+    if(!rn){p.rt=null;return false}
+    if(p.rt==null)p.rt=.3+Math.random()*2.5;
+    p.rt-=dt;if(p.rt>0)return false;
+    var best=null,bd=1e9;wxSpots.forEach(function(s){if(s.p&&s.p!==p)return;if(Math.hypot(s.x-me.position.x,s.z-me.position.z)<.7)return;var d=Math.hypot(s.x-x,s.z-z)+Math.random()*4;if(d<bd){bd=d;best=s}});
+    if(!best)return false;
+    best.p=p;p.s=best;p.m='run';p.zh=p.z0;p.cx=(Math.random()*2-1);
+    p.w=z>10?[[x,17.4],[p.cx,17.4],[p.cx,15.6],[p.cx,5],[best.x,2.7],[best.x,best.z]]:[[x,2.7],[best.x,2.7],[best.x,best.z]];
+    return true}
+  if(m==='stand'){
+    g.rotation.y+=wrap(0-g.rotation.y)*Math.min(1,dt*4);
+    if(WX.rain<.08){p.dry=(p.dry||0)+dt;if(p.dry>8+(p.id%5)*3){
+      p.s.p=null;p.dry=0;p.m='back';var sx=p.s.x;
+      p.w=p.zh>10?[[sx,2.7],[p.cx,5],[p.cx,15.6],[p.cx,17.4],[p.cx+p.d*4,p.zh]]:[[sx,2.7],[sx+p.d*3,p.zh]]}}else p.dry=0;
+    return true}
+  var w=p.w[0],dx=w[0]-x,dz=w[1]-z,d=Math.hypot(dx,dz),sp=m==='run'?3.1+(p.id%3)*.15:p.sp*1.1,st=sp*dt;
+  if(d<=st+.05){g.position.x=w[0];g.position.z=w[1];p.w.shift();
+    if(!p.w.length){if(m==='run'){p.m='stand'}else{p.m='walk';p.rt=null;return false}}}
+  else{g.position.x+=dx/d*st;g.position.z+=dz/d*st;g.rotation.y+=wrap(Math.atan2(dx,dz)-g.rotation.y)*Math.min(1,dt*10)}
+  peds.forEach(function(q){if(q===p)return;var ex=g.position.x-q.P.g.position.x,ez=g.position.z-q.P.g.position.z,ed=Math.hypot(ex,ez);if(ed<.5&&ed>1e-4){var k=(.5-ed)*dt*4;g.position.x+=ex/ed*k;g.position.z+=ez/ed*k}});
+  return true}
+function wxPedFx(p,dt,t){
+  var P=p.P,run=p.m==='run'?1:0,fa=wxWindK();P.hc=(P.hc||0)+(run-(P.hc||0))*Math.min(1,dt*6);
+  var st=p.m==='stand';wxFx(P,p.id%2,fa,P.hc,st?Math.sin(t*.5+p.id)*.45:0,st?-.12:0);
+  if(P.hc>.01)P.g.rotation.x+=.1*P.hc}
 function wxFrame(dt,t){
-  var T=WX.T,k=Math.min(1,dt*.6),ch=0,n;
+  var T=WX.T,k=Math.min(1,dt*.6),ch=0,n;WX.gs=Math.sin(t*.7)*Math.sin(t*.23+1);
   for(n in T){var d=T[n]-WX[n];WX[n]+=d*k;ch+=Math.abs(d)}
   WX.ov=Math.min(1,Math.max(WX.cl*.7,WX.rain*.85,WX.snow*.8,WX.fog*.9));
   if(ch>.004){wxDirty=1;if(++wxN%5===0)tick()}else if(wxDirty){wxDirty=0;tick()}
@@ -934,7 +992,9 @@ function wxFrame(dt,t){
   var g=1+.45*Math.sin(t*.7)*Math.sin(t*.23+1),am=(.015+WX.w*.2)*g,ln=WX.w*.3*g;
   wxTR.forEach(function(o){var s1=Math.sin(t*(1.6+WX.w*2.2)+o.ph),s2=Math.sin(t*(2.3+WX.w*2.6)+o.ph*1.7);
     o.a.position.x=o.ax+WX.dx*ln*.5+s1*am;o.a.position.z=o.az+WX.dz*ln*.5+s2*am*.6;o.b.position.x=o.bx+WX.dx*ln+s1*am*1.5;o.b.position.z=o.bz+WX.dz*ln+s2*am});
-  wxRain(dt);wxSnow(dt,t);wxLeaf(dt,t);wxWetFrame(t);
+  wxRain(dt);wxSnow(dt,t);wxLeaf(dt,t);wxDust(dt,t);wxWetFrame(t);
+  wxFx(mP,0,wxWindK()*(1-inD),0,0,0);if(!gwave)wxFx(guardP,1,wxWindK(),0,0,0);
+  wxXing=0;peds.forEach(function(p){if((p.m==="run"||p.m==="back")){var q=p.P.g.position;if(q.z>5.2&&q.z<14.8&&Math.abs(q.x)<2.4)wxXing=1}});
   if(WX.st>.5&&t>wxAt){if(!wxAt)wxAt=t+3;else{WX.fl=1;WX.dbl=Math.random()<.5?t+.18:0;wxAt=t+5+Math.random()*10}}
   if(WX.dbl&&t>WX.dbl){WX.fl=.85;WX.dbl=0}
   var f=WX.fl;if(f>0||WX.fo){WX.fl=Math.max(0,f-dt*3.2);hl.intensity=WX.hb+WX.fl*2.5;var fe=$('wxf');if(fe)fe.style.opacity=WX.fl*.45;WX.fo=WX.fl>0}
